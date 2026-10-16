@@ -9,15 +9,18 @@
 | 1 | Ali Baba and the Forty Thieves (Andrew Lang, 1889) | 본문 + 워크북 | 3,601단어 | 1회 |
 | 1 | Aladdin and the Wonderful Lamp (Andrew Lang, 1889) | 본문 + 워크북 | 5,326단어 | 2회 |
 | 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북(1–6장, 제작 중) | 39,121단어 | 9회 |
+| 3 | Alice's Adventures in Wonderland (Lewis Carroll, 1865) | 본문 (워크북 제작 중) | 26,280단어 | 6회 |
+| 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 (워크북 제작 중) | 51,118단어 | 12회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
-제작 중: Oz 워크북 7–24장, Alice's Adventures in Wonderland, The Jungle Book
+제작 중: Oz 워크북 7–24장, Alice 워크북, Jungle Book 워크북
 
 ## 원칙
 
 - **저작권이 만료된 작품만 올립니다.**
 - **원문은 바꾸지 않습니다.** 옛 문체 작품은 원문의 문장과 줄거리를 그대로 두고, 지금 쓰지 않는 단어만 오늘의 영어로 바꿉니다. 바꾼 단어는 워크북의 "Words We Updated" 표에 모두 적어 둡니다.
 - 대체할 말이 없는 옛 단어(†)와 옛 관용구(※)는 본문에 표시하고 워크북에서 설명합니다.
+- 시와 노래는 단어를 바꾸면 각운이 깨지므로 원문 그대로 둡니다.
 - *Animal Farm*은 한국에서는 저작권이 만료되었지만 미국 등에서는 아직 보호 중입니다. 그래서 워크북에는 책 본문이나 인용 없이, 새로 쓴 요약·예문·문제만 들어 있습니다.
 
 ## 읽기 시간 기준
@@ -33,7 +36,9 @@ index.html              사이트 첫 페이지
 workbooks/              내려받을 PDF (본문, 워크북)
 src/lang-tales/         Lang 동화 원문(1889), 현대어 본문, 워크북 데이터, PDF 빌드 스크립트
 src/animal-farm/        Animal Farm 워크북 데이터와 빌드 스크립트
-src/oz/                 Oz 원문, 단어 교체 규칙(modernize.py), 워크북 데이터, 빌드 스크립트
+src/oz/                 Oz 원문, 단어 교체 규칙(modernize.py), 워크북 데이터
+src/alice/, src/jungle/ Alice·Jungle Book 장별 원문(chapters.json), 단어 교체 규칙, 표시 데이터
+src/book_build.py       Oz·Alice·Jungle Book 본문/워크북 PDF 빌드 스크립트
 ```
 
 ## PDF 다시 만들기
