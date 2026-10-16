@@ -60,7 +60,7 @@ for n, d in WB.items():
     words = [v[0] for v in d["vocab"]]
     for s_, a, ds in d["quiz"]:
         if s_.count("___") != 1 or a in ds or len(set(ds)) != 3: probs.append(f"ch{n}: quiz issue {a}")
-    used = {w for w in words for s_, a, ds in d["quiz"] if a.lower().startswith(stem(w))}
+    used = {v[0] for v in d["vocab"] for s_, a, ds in d["quiz"] if a.lower().startswith(stem(v[0])) or a.lower() == v[1].lower()}
     if set(words) - used: probs.append(f"ch{n}: untested {set(words) - used}")
 print("\n".join(probs) or "validation OK")
 words_total = sum(c["words"] for c in CH)
@@ -185,7 +185,7 @@ def workbook(path, chapters):
                     ko, mod, ex = IDIOMS[k_]
                     p.append(f"<div class='note-box'><span class='h'>{e(k_)}</span><span class='ko'>({e(ko)})</span><div class='m'><b>Today:</b> {e(mod)}</div><div class='m' style='color:#666'>{e(ex)}</div></div>")
             if c["changes"]:
-                p.append("<h3>WORDS WE UPDATED</h3><table class='ch'><tr><td><b>{CFG['year']}</b></td><td><b>Today</b></td></tr>" + "".join(f"<tr><td class='o'>{e(a)}</td><td>{e(b)}</td></tr>" for a, b in c["changes"]) + "</table>")
+                p.append(f"<h3>WORDS WE UPDATED</h3><table class='ch'><tr><td><b>{CFG['year']}</b></td><td><b>Today</b></td></tr>" + "".join(f"<tr><td class='o'>{e(a)}</td><td>{e(b)}</td></tr>" for a, b in c["changes"]) + "</table>")
             p.append("</div>")
     p.append("</body></html>")
     open(path, "w", encoding="utf-8").write("".join(p))

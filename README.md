@@ -8,12 +8,12 @@
 |---|---|---|---|---|
 | 1 | Ali Baba and the Forty Thieves (Andrew Lang, 1889) | 본문 + 워크북 | 3,601단어 | 1회 |
 | 1 | Aladdin and the Wonderful Lamp (Andrew Lang, 1889) | 본문 + 워크북 | 5,326단어 | 2회 |
-| 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북(1–12장, 제작 중) | 39,121단어 | 9회 |
+| 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북 | 39,121단어 | 9회 |
 | 3 | Alice's Adventures in Wonderland (Lewis Carroll, 1865) | 본문 (워크북 제작 중) | 26,280단어 | 6회 |
 | 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 (워크북 제작 중) | 51,118단어 | 12회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
-제작 중: Oz 워크북 13–24장, Alice 워크북, Jungle Book 워크북
+제작 중: Alice 워크북, Jungle Book 워크북
 
 ## 원칙
 
