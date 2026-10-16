@@ -8,9 +8,10 @@
 |---|---|---|---|---|
 | 1 | Ali Baba and the Forty Thieves (Andrew Lang, 1889) | 본문 + 워크북 | 3,601단어 | 1회 |
 | 1 | Aladdin and the Wonderful Lamp (Andrew Lang, 1889) | 본문 + 워크북 | 5,326단어 | 2회 |
+| 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북(1–6장, 제작 중) | 39,121단어 | 9회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
-제작 중: The Wonderful Wizard of Oz, Alice's Adventures in Wonderland, The Jungle Book
+제작 중: Oz 워크북 7–24장, Alice's Adventures in Wonderland, The Jungle Book
 
 ## 원칙
 
@@ -32,6 +33,7 @@ index.html              사이트 첫 페이지
 workbooks/              내려받을 PDF (본문, 워크북)
 src/lang-tales/         Lang 동화 원문(1889), 현대어 본문, 워크북 데이터, PDF 빌드 스크립트
 src/animal-farm/        Animal Farm 워크북 데이터와 빌드 스크립트
+src/oz/                 Oz 원문, 단어 교체 규칙(modernize.py), 워크북 데이터, 빌드 스크립트
 ```
 
 ## PDF 다시 만들기
