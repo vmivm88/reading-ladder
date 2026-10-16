@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="저작권이 만료된 영어 원서를 난이도 순서로 정리한 원서 모임 워크북 모음">
+<title>리딩 사다리</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=Gothic+A1:wght@400;500;700&family=Source+Serif+4:ital,wght@0,600;1,400&display=swap">
+<style>
+/* Layout: a single column "ladder" — a vertical rail on the left with one rung per level, books hanging off each rung. */
+:root {
+  --bg: #eef1f4;
+  --surface: #ffffff;
+  --ink: #18212e;
+  --muted: #5b6676;
+  --rule: #cdd4dd;
+  --rail: #2f4a6b;
+  --mark: #f2d64b;
+  --mark-ink: #2b2508;
+  --ready: #1f6b4a;
+  --ready-bg: #dcefe5;
+  --soon-bg: #e6eaf0;
+  --f-display: "Hahmlet", "Nanum Myeongjo", Georgia, serif;
+  --f-body: "Gothic A1", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --f-title: "Source Serif 4", Georgia, serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #131922; --surface: #1b2330; --ink: #e7ecf2; --muted: #9aa6b6; --rule: #2e3a4b;
+  --rail: #7fa3cf; --mark: #e8c93a; --mark-ink: #221d05; --ready: #7fd3a8; --ready-bg: #183428; --soon-bg: #232d3b;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #131922; --surface: #1b2330; --ink: #e7ecf2; --muted: #9aa6b6; --rule: #2e3a4b;
+  --rail: #7fa3cf; --mark: #e8c93a; --mark-ink: #221d05; --ready: #7fd3a8; --ready-bg: #183428; --soon-bg: #232d3b;
+  color-scheme: dark; }
+
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.65; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header { display: grid; gap: 10px; margin-bottom: 36px; }
+.eyebrow { font-size: 12px; letter-spacing: .18em; color: var(--muted); font-weight: 700; }
+h1 { font-family: var(--f-display); font-size: clamp(34px, 7vw, 52px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 .hl { background: linear-gradient(transparent 58%, var(--mark) 58%, var(--mark) 92%, transparent 92%); color: inherit; }
+.lede { color: var(--muted); max-width: 34em; margin: 0; }
+
+.howto { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 0 0 40px; padding: 0; list-style: none; counter-reset: s; }
+.howto li { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 14px; font-size: 14px; counter-increment: s; min-width: 0; }
+.howto li::before { content: counter(s); display: block; font-family: var(--f-display); font-size: 20px; color: var(--rail); line-height: 1.2; }
+
+.ladder { position: relative; display: grid; gap: 28px; }
+.ladder::before { content: ""; position: absolute; left: 21px; top: 8px; bottom: 8px; width: 3px; background: var(--rail); border-radius: 2px; }
+.level { position: relative; display: grid; grid-template-columns: 46px 1fr; gap: 14px; }
+.rung { position: relative; z-index: 1; width: 46px; height: 46px; border-radius: 50%; background: var(--bg); border: 3px solid var(--rail);
+  display: grid; place-items: center; font-family: var(--f-display); font-weight: 700; font-size: 20px; color: var(--rail); }
+.level-body { min-width: 0; }
+.level h2 { font-family: var(--f-display); font-size: 21px; margin: 6px 0 2px; }
+.level .desc { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+.books { display: grid; gap: 8px; }
+
+.book { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 14px 16px; display: grid; gap: 6px; }
+.book.ready { border-color: var(--ready); }
+.book-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; }
+.book h3 { font-family: var(--f-title); font-weight: 600; font-size: 18px; margin: 0; }
+.author { color: var(--muted); font-size: 13px; }
+.status { margin-left: auto; font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.status.ready { background: var(--ready-bg); color: var(--ready); }
+.status.soon { background: var(--soon-bg); color: var(--muted); }
+.status.read { background: transparent; color: var(--muted); border: 1px solid var(--rule); }
+.meta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.note { font-size: 14px; margin: 0; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.btn { font: inherit; font-size: 14px; font-weight: 700; border-radius: 6px; padding: 9px 14px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn.primary { background: var(--mark); color: var(--mark-ink); border: 1px solid var(--mark); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+.btn:focus-visible { outline: 3px solid var(--rail); outline-offset: 2px; }
+.btn:hover { filter: brightness(.96); }
+.msg { font-size: 13px; color: var(--muted); min-height: 1em; }
+
+.plan { margin-top: 4px; border-top: 1px dashed var(--rule); padding-top: 8px; }
+.plan table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.plan td { padding: 3px 0; vertical-align: top; }
+.plan td:first-child { width: 4.5em; color: var(--rail); font-weight: 700; }
+details summary { cursor: pointer; font-size: 13px; color: var(--rail); font-weight: 700; }
+
+
+.std { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; margin: 0 0 40px; }
+.std h2 { font-family: var(--f-display); font-size: 19px; margin: 0 0 10px; }
+.std-grid { display: grid; grid-template-columns: auto 1fr; gap: 14px 22px; align-items: start; }
+.std-big { display: grid; line-height: 1.1; padding-top: 4px; }
+.std-big .num { font-family: var(--f-display); font-size: 36px; font-weight: 700; color: var(--rail); font-variant-numeric: tabular-nums; }
+.std-big .unit { font-size: 13px; color: var(--muted); font-weight: 700; }
+.std-list { margin: 0; padding-left: 18px; font-size: 14px; display: grid; gap: 4px; min-width: 0; }
+.time { font-size: 13px; font-weight: 700; color: var(--rail); font-variant-numeric: tabular-nums; }
+@media (max-width: 520px) { .std-grid { grid-template-columns: 1fr; } }
+footer { margin-top: 44px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 16px; display: grid; gap: 6px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ENGLISH BOOK CLUB · READING LADDER</div>
+    <h1>한 칸씩 올라가는 <span class="hl">영어 원서</span></h1>
+    <p class="lede">저작권 걱정 없이 함께 읽을 수 있는 영어 원서를 난이도 순서로 정리했어요. 워크북이 있는 책은 바로 내려받아 모임 준비에 쓰시면 됩니다.</p>
+  </header>
+
+  <ol class="howto" aria-label="워크북 사용법">
+    <li>책은 각자 가진 원서로 한 장씩 읽어요.</li>
+    <li>워크북의 단어 카드로 장마다 20단어를 익혀요.</li>
+    <li>빈칸 채우기 20문제로 확인해요.</li>
+    <li>토론 질문 두 개를 골라 모임에서 이야기해요.</li>
+  </ol>
+
+  <section class="std" aria-labelledby="std-h">
+    <h2 id="std-h">읽기 시간 기준</h2>
+    <div class="std-grid">
+      <div class="std-big"><span class="num">1,000</span><span class="unit">단어 ≈ 10분</span></div>
+      <ul class="std-list">
+        <li>영어 학습자는 보통 <b>분당 약 100단어</b>를 읽어요. 연구에서 확인된 학습자 평균은 80~120단어예요.</li>
+        <li>워크북까지 하면 <b>읽기 시간의 약 2배</b>로 잡아요.</li>
+        <li>모임 1회 분량은 <b>약 4,300단어</b>예요. 우리 모임이 The Giver(약 4만 3천 단어)를 10회 만에 읽은 속도가 기준이에요.</li>
+        <li>예: 5,000단어 = 혼자 읽기 약 50분 · 워크북 포함 약 1시간 40분 · 모임 1~2회</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="ladder">
+
+    <section class="level" aria-labelledby="l1">
+      <div class="rung" aria-hidden="true">1</div>
+      <div class="level-body">
+        <h2 id="l1">짧은 옛이야기</h2>
+        <p class="desc">익숙한 옛이야기. 원서 읽기를 처음 시작할 때.</p>
+        <div class="books">
+          
+          <article class="book ready" id="alibaba">
+            <div class="book-top"><h3>Ali Baba and the Forty Thieves</h3><span class="author">Andrew Lang (1889) · 오늘의 영어로</span><span class="status ready">본문 + 워크북</span></div>
+            <div class="meta">6부 · 3,601단어 · B1 · 단어 60개 · 빈칸 문제 60개</div>
+            <div class="time">읽기 약 35분 · 워크북 포함 약 1시간 10분 · 모임 1회</div>
+            <p class="note">1889년 원문의 문장과 줄거리는 그대로 두고, 지금 쓰지 않는 단어만 요즘 단어로 바꿨어요. 옛 단어(†)와 옛 표현(※)은 워크북에서 설명해요.</p>
+            <div class="actions">
+              <a class="btn primary" href="workbooks/alibaba-reader.pdf" download="AliBaba_Reader.pdf">본문 내려받기</a>
+              <a class="btn primary" href="workbooks/alibaba-workbook.pdf" download="AliBaba_Workbook.pdf">워크북 내려받기</a>
+              <a class="btn ghost" href="workbooks/alibaba-reader.pdf" target="_blank" rel="noopener">본문 열기</a>
+              <a class="btn ghost" href="workbooks/alibaba-workbook.pdf" target="_blank" rel="noopener">워크북 열기</a>
+            </div>
+          </article>
+          <article class="book ready" id="aladdin">
+            <div class="book-top"><h3>Aladdin and the Wonderful Lamp</h3><span class="author">Andrew Lang (1889) · 오늘의 영어로</span><span class="status ready">본문 + 워크북</span></div>
+            <div class="meta">9부 · 5,326단어 · B1 · 단어 90개 · 빈칸 문제 90개</div>
+            <div class="time">읽기 약 55분 · 워크북 포함 약 1시간 50분 · 모임 2회 (1–6부 / 7–9부)</div>
+            <p class="note">1889년 원문의 문장과 줄거리는 그대로 두고, 지금 쓰지 않는 단어만 요즘 단어로 바꿨어요. 바꿀 수 없는 옛 단어(†)와 옛 표현(※)은 본문에 표시하고 워크북에서 설명해요. 워크북에는 바꾼 단어 목록도 부마다 들어 있어요.</p>
+            <div class="actions">
+              <a class="btn primary" href="workbooks/aladdin-reader.pdf" download="Aladdin_Reader.pdf">본문 내려받기</a>
+              <a class="btn primary" href="workbooks/aladdin-workbook.pdf" download="Aladdin_Workbook.pdf">워크북 내려받기</a>
+              <a class="btn ghost" href="workbooks/aladdin-reader.pdf" target="_blank" rel="noopener">본문 열기</a>
+              <a class="btn ghost" href="workbooks/aladdin-workbook.pdf" target="_blank" rel="noopener">워크북 열기</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="level" aria-labelledby="l2">
+      <div class="rung" aria-hidden="true">2</div>
+      <div class="level-body">
+        <h2 id="l2">동화 고전</h2>
+        <p class="desc">모험 이야기라 술술 읽혀요. 장이 짧아 한 번에 한두 장씩 읽기 좋아요.</p>
+        <div class="books">
+          <article class="book">
+            <div class="book-top"><h3>The Wonderful Wizard of Oz</h3><span class="author">L. Frank Baum (1900)</span><span class="status soon">제작 중</span></div>
+            <div class="meta">공개 저작물 원문 수록 예정</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="level" aria-labelledby="l3">
+      <div class="rung" aria-hidden="true">3</div>
+      <div class="level-body">
+        <h2 id="l3">고전 원작</h2>
+        <p class="desc">19세기 영어 원문 그대로. 문장이 길고 옛 표현과 말장난이 섞여 있어요.</p>
+        <div class="books">
+          <article class="book">
+            <div class="book-top"><h3>Alice's Adventures in Wonderland</h3><span class="author">Lewis Carroll (1865)</span><span class="status soon">곧 공개</span></div>
+            <div class="meta">워크북 완성 · 83쪽 · 공개 저작물 원문 수록</div>
+          </article>
+          <article class="book">
+            <div class="book-top"><h3>The Jungle Book</h3><span class="author">Rudyard Kipling (1894)</span><span class="status soon">제작 중</span></div>
+            <div class="meta">옛 문체가 많아 오늘의 영어로 옮긴 본문 + 워크북 예정</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="level" aria-labelledby="l4">
+      <div class="rung" aria-hidden="true">4</div>
+      <div class="level-body">
+        <h2 id="l4">어른을 위한 고전</h2>
+        <p class="desc">분량은 짧지만 어휘가 격식 있고 정치·풍자 표현이 많아요.</p>
+        <div class="books">
+          <article class="book ready" id="animal-farm">
+            <div class="book-top"><h3>Animal Farm</h3><span class="author">George Orwell (1945)</span><span class="status ready">워크북 있음</span></div>
+            <div class="meta">10장 · 약 3만 단어 · 단어 200개 · 빈칸 문제 200개 · 토론 질문 50개 · 72쪽 PDF</div>
+            <div class="time">읽기 약 5시간 · 워크북 포함 약 10시간 · 모임 7회</div>
+            <p class="note">장마다 요약, 단어 카드(강세·발음기호·한국어 뜻·연어·예문), 빈칸 문제, 토론 질문과 정답이 들어 있어요. 책 본문은 각자 가진 책으로 읽어요.</p>
+            <div class="plan">
+              <details>
+                <summary>7주 읽기 계획 보기</summary>
+                <table>
+                  <tr><td>1주차</td><td>1–2장 · 올드 메이저의 꿈, 반란</td></tr>
+                  <tr><td>2주차</td><td>3–4장 · 첫 수확, 외양간 전투</td></tr>
+                  <tr><td>3주차</td><td>5장 · 스노볼 추방</td></tr>
+                  <tr><td>4주차</td><td>6장 · 무너진 풍차</td></tr>
+                  <tr><td>5주차</td><td>7장 · 자백</td></tr>
+                  <tr><td>6주차</td><td>8장 · 풍차 전투</td></tr>
+                  <tr><td>7주차</td><td>9–10장 · 복서의 최후, 마지막 만찬</td></tr>
+                </table>
+              </details>
+            </div>
+            <div class="actions">
+              <a class="btn primary" href="workbooks/animal-farm-workbook.pdf" download="AnimalFarm_Workbook_Ch1-10.pdf">PDF 내려받기</a>
+              <a class="btn ghost" href="workbooks/animal-farm-workbook.pdf" target="_blank" rel="noopener">새 탭에서 열기</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <div>이 페이지에는 저작권이 만료된 작품만 올려요. 옛 문체가 어려운 작품은 원문의 문장과 줄거리를 그대로 두고, 지금 쓰지 않는 단어만 오늘의 영어로 바꾼 본문을 함께 제공해요.</div>
+    <div>Animal Farm은 한국에서 저작권이 만료된 작품이에요. 워크북에는 책 본문이나 인용문 없이 새로 쓴 요약·예문·문제만 들어 있어요.</div>
+    <div>단계는 문장 길이와 어휘를 기준으로 모임에서 정한 순서예요. 읽기 시간은 분당 100단어 기준의 대략적인 값이에요.</div>
+  </footer>
+</div>
+</body>
+</html>
