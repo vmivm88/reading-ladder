@@ -33,6 +33,8 @@ RULES = [
  (r"\bhastened\b", "hurried", "hastened", "hurried", 1),
  (r"\bqueer\b", "strange", "queer", "strange", None),
  (r"\bQueer\b", "Strange", "queer", "strange", None),
+ (r"\bbrilliancy\b", "brilliance", "brilliancy", "brilliance", None),
+ (r"\bcounterpane\b", "bedspread", "counterpane", "bedspread", None),
  (r"\bfrocks\b", "dresses", "frocks", "dresses", None),
  (r"\bfrock\b", "dress", "frock", "dress", None),
 ]

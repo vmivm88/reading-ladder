@@ -197,7 +197,7 @@ if __name__ == "__main__":
     jobs = [(f"{sl}_reader.html", f"{sl}-reader.pdf")]
     if chapters:
         workbook(os.path.join(SCR, f"{sl}_wb.html"), chapters)
-        jobs.append((f"{sl}_wb.html", f"{sl}-workbook-ch{chapters[0]}-{chapters[-1]}.pdf"))
+        jobs.append((f"{sl}_wb.html", f"{sl}-workbook.pdf"))
     with sync_playwright() as pw:
         b = pw.chromium.launch(); pg = b.new_page()
         for src, pdf in jobs:
