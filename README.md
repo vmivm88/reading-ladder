@@ -55,7 +55,7 @@ pip install playwright pypdfium2
 python -m playwright install chromium
 ```
 
-Oz·Alice·Jungle Book·Anne·Secret Garden은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`, `garden`, `gatsby`). 결과 PDF는 `workbooks/`에 저장됩니다.
+Oz·Alice·Jungle Book·Anne·Secret Garden은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`, `garden`, `gatsby`, `animal-farm`). 결과 PDF는 `workbooks/`에 저장됩니다.
 
 `src/lang-tales/build_story.py aladdin`(또는 `alibaba`)로 Lang 동화를 다시 만들 수 있습니다.
 

@@ -23,6 +23,10 @@ CFG = {
             meetings=[(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7,2),(8,8),(9,9)], slug="gatsby", unit="Chapter",
             intro="Fitzgerald wrote in modern English, so almost nothing was changed: only twelve words whose everyday meaning has shifted since 1925, such as <i>gay</i> (then meaning merry) and <i>presently</i> (then meaning soon). Jazz Age expressions like <i>old sport</i> and 1920s words like <i>wire</i> (a telegram) are kept and explained in the workbook. The novel shows the racism and antisemitism of its time, in the words of characters like Tom Buchanan and in some descriptions. We kept every word so the story is complete; these passages are worth talking about at the meeting.",
             wb_cover="Use with the reader. For each chapter: 10 word cards (20 for Chapter 7, which takes two meetings), fill-in-the-blank questions, notes on 1920s words and expressions, and questions to talk about."),
+ "animal-farm": dict(dir=os.path.join(HERE, "animal-farm"), noreader=True, title="Animal Farm", source="George Orwell, Animal Farm (1945)", year="1945", sub="George Orwell", level="Level 4 (B2)",
+            meetings=[(1,2),(3,4),(5,5),(6,6),(7,7),(8,8),(9,10)], slug="animal-farm", unit="Chapter",
+            wb_cover="Read each chapter in your own copy of the book. For each chapter: an original summary, 20 word cards, 20 fill-in-the-blank questions, and questions to talk about.",
+            wb_howto="1. Read the chapter in your own copy of the book (about 4,300 words per meeting).<br>2. Read the summary and the list of characters.<br>3. Study the 20 word cards.<br>4. Do the 20 practice questions without looking back.<br>5. Choose two questions to talk about at the meeting."),
  "jungle": dict(dir=os.path.join(HERE, "jungle"), title="The Jungle Book", source="Rudyard Kipling, The Jungle Book (1894)", year="1894", sub="Rudyard Kipling's 1894 text in today's words", level="Level 3 (B2)",
             meetings=[(1,2,2),(3,4,2),(5,6,2),(7,8,2),(9,10,1),(11,12,2),(13,14,1)], slug="jungle", unit="Section",
             intro="Kipling's animals speak in old English: <i>thou art</i>, <i>hast thou</i>, <i>ye</i>. In the stories these were changed to today's English (<i>you are</i>, <i>have you</i>, <i>you</i>), about 300 changes in all. The songs are kept exactly as written, because changing a word would break the rhyme. The Jungle's Master Word, <i>We be of one blood, ye and I</i>, is also kept as Kipling wrote it.",
@@ -36,7 +40,8 @@ def hm(m):
     h, r = divmod(int(round(m / 5.0) * 5), 60)
     return ((f"{h} hr " if h else "") + (f"{r} min" if r else "")).strip()
 MEETINGS = CFG["meetings"]
-M = json.load(open(os.path.join(CFG["dir"], "modern.json"), encoding="utf-8"))
+NOREADER = CFG.get("noreader", False)
+M = [] if NOREADER else json.load(open(os.path.join(CFG["dir"], "modern.json"), encoding="utf-8"))
 sys.path.insert(0, CFG["dir"])
 WB, OLD, IDIOMS, OLD_MARKS, IDIOM_MARKS, DIALECT = {}, {}, {}, {}, {}, {}
 GUIDE = ""
@@ -45,6 +50,7 @@ for mod in sorted(f[:-3] for f in os.listdir(CFG["dir"]) if re.match(CFG["slug"]
     WB.update(w.WB); OLD.update(getattr(w, "OLD", {})); IDIOMS.update(getattr(w, "IDIOMS", {}))
     OLD_MARKS.update(getattr(w, "OLD_MARKS", {})); IDIOM_MARKS.update(getattr(w, "IDIOM_MARKS", {}))
     DIALECT.update(getattr(w, "DIALECT", {})); GUIDE = getattr(w, "GUIDE", "") or GUIDE
+    CHMETA = getattr(w, "CHMETA", {}) if NOREADER else {}
 stem = lambda w: w.lower()[:max(3, len(w) - 2)]
 def roman_title(t, idx=None):
     m = re.match(r"(?i)Chapter ([IVXLC]+)\.? (.*)", t)
@@ -90,6 +96,8 @@ for key, val in DIALECT.items():
             k = re.search(re.escape(key), m.group(0), re.I); s0 = m.start() + k.start(); s1 = s0 + len(key)
             c["text"] = c["text"][:s0] + "%%" + c["text"][s0:s1] + "%%" + c["text"][s1:]; break
     else: probs.append(f"dialect '{key}' not found")
+if NOREADER:
+    CH = [dict(n=n, name=CHMETA[n]["name"], text="", changes=[], words=0, meta=CHMETA[n]) for n in sorted(CHMETA)]
 for n, d in WB.items():
     words = [v[0] for v in d["vocab"]]
     for s_, a, ds in d["quiz"]:
@@ -147,10 +155,13 @@ def mark(text):
     return "".join(out)
 
 def cover(sub, note):
-    return f"""<div class='page cover'><div class='series'>ENGLISH BOOK CLUB · CLASSICS IN TODAY'S WORDS</div>
+    src = (f"This workbook contains no text from {e(TITLE)}; summaries, examples and questions are original.<br>" if NOREADER
+           else f"Original text: {e(SOURCE)}, public domain. Every sentence and event is kept; only words no longer in everyday use were replaced with today's words.<br>")
+    series = "ENGLISH BOOK CLUB · VOCABULARY WORKBOOK" if NOREADER else "ENGLISH BOOK CLUB · CLASSICS IN TODAY'S WORDS"
+    return f"""<div class='page cover'><div class='series'>{series}</div>
 <h1 style='font-size:28pt'>{e(TITLE)}</h1><div class='author'>{e(sub)}</div>
 <div class='note'>{note}</div>
-<div class='credit'>Original text: {e(SOURCE)}, public domain. Every sentence and event is kept; only words no longer in everyday use were replaced with today's words.<br>Workbook, notes, markings and exercises © 2026 Fine pearls (파인펄스) · Reading Ladder, licensed under CC BY-NC 4.0 (creativecommons.org/licenses/by-nc/4.0): free to share and adapt for non-commercial use with credit.</div></div>"""
+<div class='credit'>{src}Workbook, notes, markings and exercises © 2026 Fine pearls (파인펄스) · Reading Ladder, licensed under CC BY-NC 4.0 (creativecommons.org/licenses/by-nc/4.0): free to share and adapt for non-commercial use with credit.</div></div>"""
 
 LEGEND = """<div class='legend'>
 <div><b class='v'>highlighted</b> — a word studied in the workbook</div>
@@ -174,7 +185,7 @@ def meeting_rows():
         w = sum(c["words"] for c in CH if a <= c["n"] <= b)
         chs = (f"{CFG['unit']} {a}" if a == b else f"{CFG['unit']}s {a}–{b}") + (" · " + " / ".join(c["name"] for c in CH if a <= c["n"] <= b) if CFG["unit"] == "Section" else "")
         lab = f"Meeting {k1}" if k1 == k2 else f"Meetings {k1}–{k2}"
-        rows.append(f"<tr><td class='n'>{lab}</td><td>{e(chs)} · {w:,} words · about {mins(w)} min</td></tr>")
+        rows.append(f"<tr><td class='n'>{lab}</td><td>{e(chs)}" + (f" · {w:,} words · about {mins(w)} min" if w else " · " + " / ".join(c['name'] for c in CH if a <= c['n'] <= b)) + "</td></tr>")
     return "".join(rows)
 
 def reader(path):
@@ -203,12 +214,18 @@ def workbook(path, chapters):
     rng = f"{unit}s {chapters[0]}–{chapters[-1]}"
     p.append(cover(f"Workbook · {rng}", CFG.get("wb_cover", "Use with the reader. For each chapter: 10 word cards, 10 fill-in-the-blank questions, notes on old words and old expressions, the list of updated words, and questions to talk about.")))
     p.append("<div class='page'><h2>How to Use This Workbook</h2><div>" + CFG.get("wb_howto", "1. Read one chapter in the reader.<br>2. Study the 10 word cards.<br>3. Do the 10 practice questions without looking back.<br>"
-             "4. Read the notes on old words (†) and old expressions (※).<br>5. Choose a question to talk about at the meeting.") + "</div>" + LEGEND + "<h3>MEETINGS</h3><table class='chars'>" + meeting_rows() + "</table></div>")
+             "4. Read the notes on old words (†) and old expressions (※).<br>5. Choose a question to talk about at the meeting.") + "</div>" + ("" if NOREADER else LEGEND) + "<h3>MEETINGS</h3><table class='chars'>" + meeting_rows() + "</table></div>")
     if GUIDE: p.append(GUIDE)
     for c in CH:
         n = c["n"]
         if n not in chapters or n not in WB: continue
         wb = WB[n]; nv = len(wb["vocab"])
+        if NOREADER:
+            mt = c["meta"]
+            p.append(f"<div class='page'><div class='chlabel'>{unit.upper()} {n} · {e(c['name'].upper())} · {meeting_label(n)}</div><h2>Chapter Summary</h2><div>{e(mt['summary'])}</div>")
+            if mt["characters"]:
+                p.append(f"<h3>{'WHO IS WHO' if n == 1 else 'NEW CHARACTERS'}</h3><table class='chars'>" + "".join(f"<tr><td class='n'>{e(a_)}</td><td>{e(b_)}</td></tr>" for a_, b_ in mt["characters"]) + "</table>")
+            p.append("<h3>WORDS IN THIS CHAPTER</h3><div>" + " · ".join(e(v[0]) for v in wb["vocab"]) + "</div></div>")
         lab = lambda i=None: f"<div class='chlabel'>{unit.upper()} {n} · {e(c['name'].upper())}" + (f" · {meeting_label(n, i, nv)}" if nv > 10 or CFG['slug'] == 'jungle' else "") + "</div>"
         for half in range(0, nv, 5):
             p.append(f"<div class='page'>{lab(half)}<h2>{'Vocabulary' if half == 0 else 'Vocabulary (continued)'}</h2>")
@@ -267,8 +284,9 @@ def workbook(path, chapters):
 if __name__ == "__main__":
     out = os.path.join(REPO, "workbooks"); sl = CFG["slug"]
     chapters = sorted(WB)
-    reader(os.path.join(SCR, f"{sl}_reader.html"))
-    jobs = [(f"{sl}_reader.html", f"{sl}-reader.pdf")]
+    jobs = []
+    if not NOREADER:
+        reader(os.path.join(SCR, f"{sl}_reader.html")); jobs.append((f"{sl}_reader.html", f"{sl}-reader.pdf"))
     if chapters:
         workbook(os.path.join(SCR, f"{sl}_wb.html"), chapters)
         jobs.append((f"{sl}_wb.html", f"{sl}-workbook.pdf"))
