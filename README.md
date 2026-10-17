@@ -13,6 +13,7 @@
 | 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 + 워크북 | 50,750단어 | 12회 |
 | 3 | Anne of Green Gables (L. M. Montgomery, 1908) | 본문 + 워크북 | 101,968단어 | 24회 |
 | 3 | The Secret Garden (Frances Hodgson Burnett, 1911) | 본문 + 워크북 | 80,315단어 | 18회 |
+| 4 | The Great Gatsby (F. Scott Fitzgerald, 1925) | 본문 + 워크북 | 48,183단어 | 10회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
 
@@ -40,6 +41,7 @@ src/animal-farm/        Animal Farm 워크북 데이터와 빌드 스크립트
 src/oz/                 Oz 원문, 단어 교체 규칙(modernize.py), 워크북 데이터
 src/alice/, src/jungle/ Alice·Jungle Book 장별 원문(chapters.json), 단어 교체 규칙, 표시 데이터
 src/anne/               Anne 장별 원문, 단어 교체 규칙, 워크북 데이터
+src/gatsby/             Great Gatsby 장별 원문, 단어 교체 규칙, 1920년대 단어 해설, 워크북 데이터
 src/garden/             Secret Garden 장별 원문, 단어 교체 규칙, 요크셔 사투리 해설, 워크북 데이터
 src/book_build.py       Oz·Alice·Jungle Book·Anne·Secret Garden 본문/워크북 PDF 빌드 스크립트
 ```
@@ -53,7 +55,7 @@ pip install playwright pypdfium2
 python -m playwright install chromium
 ```
 
-Oz·Alice·Jungle Book·Anne·Secret Garden은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`, `garden`). 결과 PDF는 `workbooks/`에 저장됩니다.
+Oz·Alice·Jungle Book·Anne·Secret Garden은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`, `garden`, `gatsby`). 결과 PDF는 `workbooks/`에 저장됩니다.
 
 `src/lang-tales/build_story.py aladdin`(또는 `alibaba`)로 Lang 동화를 다시 만들 수 있습니다.
 

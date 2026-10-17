@@ -19,6 +19,10 @@ CFG = {
  "garden": dict(dir=os.path.join(HERE, "garden"), title="The Secret Garden", source="Frances Hodgson Burnett, The Secret Garden (1911)", year="1911", sub="Frances Hodgson Burnett's 1911 text in today's words", level="Level 3 (B1–B2)",
             meetings=[(1,3),(4,4),(5,6),(7,8),(9,9),(10,10),(11,12),(13,13),(14,14),(15,15),(16,17),(18,19),(20,20),(21,22),(23,23),(24,24),(25,26),(27,27)], slug="garden", unit="Chapter",
             intro="Burnett's own English is close to today's, so only about eighty old words were replaced—mostly <i>queer</i> (now <i>strange</i>) and <i>presently</i> (now <i>soon</i>). The Yorkshire speech of Martha, Dickon, Ben Weatherstaff and Mrs. Sowerby is kept exactly as Burnett wrote it, because it is part of who they are; see the Yorkshire guide on the next page. The book was written in 1911, when Britain ruled India, and some characters speak about Indian people in ways that are hurtful and wrong by today's standards. We kept these words so the story is complete; they are worth talking about at the meeting."),
+ "gatsby": dict(dir=os.path.join(HERE, "gatsby"), title="The Great Gatsby", source="F. Scott Fitzgerald, The Great Gatsby (1925)", year="1925", sub="F. Scott Fitzgerald's 1925 text, complete", level="Level 4 (B2–C1)",
+            meetings=[(1,1),(2,2),(3,3),(4,4),(5,5),(6,6),(7,7,2),(8,8),(9,9)], slug="gatsby", unit="Chapter",
+            intro="Fitzgerald wrote in modern English, so almost nothing was changed: only twelve words whose everyday meaning has shifted since 1925, such as <i>gay</i> (then meaning merry) and <i>presently</i> (then meaning soon). Jazz Age expressions like <i>old sport</i> and 1920s words like <i>wire</i> (a telegram) are kept and explained in the workbook. The novel shows the racism and antisemitism of its time, in the words of characters like Tom Buchanan and in some descriptions. We kept every word so the story is complete; these passages are worth talking about at the meeting.",
+            wb_cover="Use with the reader. For each chapter: 10 word cards (20 for Chapter 7, which takes two meetings), fill-in-the-blank questions, notes on 1920s words and expressions, and questions to talk about."),
  "jungle": dict(dir=os.path.join(HERE, "jungle"), title="The Jungle Book", source="Rudyard Kipling, The Jungle Book (1894)", year="1894", sub="Rudyard Kipling's 1894 text in today's words", level="Level 3 (B2)",
             meetings=[(1,2,2),(3,4,2),(5,6,2),(7,8,2),(9,10,1),(11,12,2),(13,14,1)], slug="jungle", unit="Section",
             intro="Kipling's animals speak in old English: <i>thou art</i>, <i>hast thou</i>, <i>ye</i>. In the stories these were changed to today's English (<i>you are</i>, <i>have you</i>, <i>you</i>), about 300 changes in all. The songs are kept exactly as written, because changing a word would break the rhyme. The Jungle's Master Word, <i>We be of one blood, ye and I</i>, is also kept as Kipling wrote it.",
@@ -133,6 +137,8 @@ def mark(text):
         p = re.sub(r"%%(.+?)%%", r"<span class='dia'>\1<sup>Y</sup></span>", p)
         if p.startswith("@@BREAK@@"):
             out.append(f"<div class='mbreak'>MEETING {p[9:]} STARTS HERE</div>"); continue
+        if p == "@@POEM@@* * *":
+            out.append("<p style='text-align:center;letter-spacing:6px;color:#a08a5a;margin:14px 0'>* * *</p>"); continue
         if p.startswith("@@POEM@@"):
             p = p[8:].replace("\n@@STANZA@@\n", "</p><p class='poem'>").replace("\n", "<br>")
             out.append(f"<p class='poem'>{p}</p>")
