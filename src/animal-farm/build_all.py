@@ -121,7 +121,7 @@ def build(chs, path_html, cover_sub):
     p = [f"<html><head><meta charset='utf-8'><style>{CSS}</style></head><body>"]
     p.append(f"""<div class='page cover'><div class='series'>ENGLISH BOOK CLUB WORKBOOK</div>
 <h1>Animal Farm</h1><div class='author'>George Orwell</div><div class='ch'>{e(cover_sub)}</div>
-<div class='note'>Vocabulary &amp; Usage Workbook — read each chapter in your own copy of the book, then use this workbook to study 20 key words per chapter, practise them in context, and prepare for discussion.</div></div>""")
+<div class='note'>Vocabulary &amp; Usage Workbook — read each chapter in your own copy of the book, then use this workbook to study 20 key words per chapter, practise them in context, and prepare for discussion.</div><div class='credit' style='font-size:9pt;color:#6b5d45;margin:50px auto 0;width:135mm;line-height:1.6'>This workbook contains no text from the novel; summaries, examples and questions are original. © 2026 Fine pearls (파인펄스) · Reading Ladder, licensed under CC BY-NC 4.0 (creativecommons.org/licenses/by-nc/4.0): free to share and adapt for non-commercial use with credit.</div></div>""")
     if len(chs) > 1:
         p.append("<div class='page'><h2>How to Use This Workbook</h2>"
                  "<div>1. Read the chapter in your own copy and underline the 20 words when you meet them.<br>"

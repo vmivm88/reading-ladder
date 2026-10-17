@@ -18,8 +18,9 @@ def hm(m):
     return (f"{h} hr " if h else "") + (f"{r} min" if r else "").strip()
 from playwright.sync_api import sync_playwright
 
-SCR = "/tmp/claude-0/-home-claude/e588e643-7009-5b40-9d8e-ea66df17ea15/scratchpad"
-CSS = open(os.path.join(SCR, "style.css"), encoding="utf-8").read()
+REPO = os.path.dirname(os.path.dirname(HERE))
+SCR = os.environ.get("BUILD_TMP", os.path.join(REPO, ".build")); os.makedirs(os.path.join(SCR, "prev"), exist_ok=True)
+CSS = open(os.path.join(REPO, "src", "animal-farm", "style.css"), encoding="utf-8").read()
 e = html.escape
 stem = lambda w: w.lower()[:max(3, len(w) - 2)]
 
@@ -77,7 +78,7 @@ def cover(sub, note):
     return f"""<div class='page cover'><div class='series'>ENGLISH BOOK CLUB · CLASSICS IN TODAY'S WORDS</div>
 <h1 style='font-size:30pt'>{e(TITLE)}</h1><div class='author'>{e(sub)}</div>
 <div class='note'>{note}</div>
-<div class='credit'>Text: {e(SOURCE)}, public domain. Every sentence and event is kept; only words no longer in everyday use were replaced with today's words. Part divisions, markings and exercises were added by the English Book Club.</div></div>"""
+<div class='credit'>Text: {e(SOURCE)}, public domain. Every sentence and event is kept; only words no longer in everyday use were replaced with today's words. Part divisions were added for reading.<br>Workbook, part divisions, notes, markings and exercises © 2026 Fine pearls (파인펄스) · Reading Ladder, licensed under CC BY-NC 4.0 (creativecommons.org/licenses/by-nc/4.0): free to share and adapt for non-commercial use with credit.</div></div>"""
 
 LEGEND = """<div class='legend'>
 <div><b class='v'>highlighted</b> — a word studied in the workbook</div>
@@ -146,7 +147,7 @@ def workbook(path):
     open(path, "w", encoding="utf-8").write("".join(p))
 
 if __name__ == "__main__":
-    out = os.path.join(os.path.dirname(HERE), "workbooks")
+    out = os.path.join(REPO, "workbooks")
     reader(os.path.join(SCR, f"{SLUG}_reader.html")); workbook(os.path.join(SCR, f"{SLUG}_wb.html"))
     with sync_playwright() as pw:
         b = pw.chromium.launch(); pg = b.new_page()

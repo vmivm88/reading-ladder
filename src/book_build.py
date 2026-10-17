@@ -144,7 +144,7 @@ def cover(sub, note):
     return f"""<div class='page cover'><div class='series'>ENGLISH BOOK CLUB · CLASSICS IN TODAY'S WORDS</div>
 <h1 style='font-size:28pt'>{e(TITLE)}</h1><div class='author'>{e(sub)}</div>
 <div class='note'>{note}</div>
-<div class='credit'>Text: {e(SOURCE)}, public domain (Project Gutenberg edition). Every sentence and event is kept; only words no longer in everyday use were replaced with today's words. Markings and exercises were added by the English Book Club.</div></div>"""
+<div class='credit'>Original text: {e(SOURCE)}, public domain. Every sentence and event is kept; only words no longer in everyday use were replaced with today's words.<br>Workbook, notes, markings and exercises © 2026 Fine pearls (파인펄스) · Reading Ladder, licensed under CC BY-NC 4.0 (creativecommons.org/licenses/by-nc/4.0): free to share and adapt for non-commercial use with credit.</div></div>"""
 
 LEGEND = """<div class='legend'>
 <div><b class='v'>highlighted</b> — a word studied in the workbook</div>

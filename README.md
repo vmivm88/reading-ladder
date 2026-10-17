@@ -55,9 +55,15 @@ python -m playwright install chromium
 
 Oz·Alice·Jungle Book·Anne·Secret Garden은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`, `garden`). 결과 PDF는 `workbooks/`에 저장됩니다.
 
-`src/lang-tales/build_story.py`와 `src/animal-farm/build_all.py`는 원래 작업 환경의 경로를 쓰고 있어서, 다시 빌드하려면 스크립트 안의 경로를 이 저장소 기준으로 바꿔야 합니다.
+`src/lang-tales/build_story.py aladdin`(또는 `alibaba`)로 Lang 동화를 다시 만들 수 있습니다.
 
 ## 출처
 
 - Andrew Lang, *The Blue Fairy Book* (1889) — 공개 저작물
 - 읽기 속도: Beglar, Hunt & Kite 외, 외국어 학습자 읽기 속도 연구 (*Reading in a Foreign Language*)
+
+## 라이선스
+
+- 원작 본문: 공개 저작물 (Public Domain)
+- 워크북·해설·연습문제: © 2026 Fine pearls(파인펄스) · [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.ko) — 출처를 밝히면 비상업적 목적으로 자유롭게 쓰고 고칠 수 있습니다. 자세한 내용은 [LICENSE.md](LICENSE.md)를 보세요.
+
