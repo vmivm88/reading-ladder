@@ -191,6 +191,7 @@ OLD = {
  "hearken": ("동사", "(옛) 귀 기울이다 (= listen)", "Dickon says \"hearken at 'em callin'\" = listen to them calling."),
 }
 IDIOMS = {
+ "I’ll warrant": ("틀림없이 ~야, 장담하는데", "I bet / I'm sure", "Old-fashioned. Mary copies Yorkshire talk: \"I'll warrant it's the graidelest one\" = I bet it's the finest one."),
  "as thin as a lath": ("비쩍 마른", "very thin / as thin as a rail", "A lath is a thin strip of wood. Today: \"as thin as a stick\" or \"skinny\"."),
 }
 DIALECT = {
@@ -203,7 +204,7 @@ DIALECT = {
  "mon": ("man", "남자, 사나이", "\"Tha'lt make a mon yet\" = you'll grow up to be a man yet."),
 }
 OLD_MARKS = {15: ["carven"], 18: ["hearken"]}
-IDIOM_MARKS = {21: ["as thin as a lath"]}
+IDIOM_MARKS = {21: ["I’ll warrant", "as thin as a lath"]}
 
 # keep vocab and quiz in story order
 _M = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "modern.json"), encoding="utf-8"))

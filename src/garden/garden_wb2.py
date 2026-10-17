@@ -179,7 +179,7 @@ WB = {
  ("Mary said she had driven over the moor in the dark and thought it was ___.", "hideous", ["hidden", "tedious", "hilarious"]),
  ("\"I couldn't go on the moor,\" Colin said in a ___ tone.", "resentful", ["restful", "respectful", "resourceful"]),
  ("Mary felt as if Colin almost ___ about dying.", "boasted", ["boosted", "bloated", "toasted"]),
- ("Soon they were laughing like ordinary children, not a hard, ___ girl and a sickly boy.", "unloving", ["unlovely", "unmoving", "unlucky"]),
+ ("Soon they were laughing like ordinary children, not a hard, ___ girl and a sickly boy.", "unloving", ["unmoving", "unlucky", "unlocking"]),
 ], discussion=[
  "Mary tells Colin about Dickon and the moor, and Colin forgets to talk about dying. Why does talking about nature help him?",
  "Colin and Mary laugh together for the first time. Can laughter change how we feel about our problems?",

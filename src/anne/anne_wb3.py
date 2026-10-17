@@ -119,7 +119,7 @@ WB = {
  ("anguish", "anguish", "n.", "AN-guish", "/ˈæŋɡwɪʃ/", "극심한 괴로움, 비통", "in anguish · cry out in anguish", "She cried out in anguish.", "He could see the anguish on her face."),
 ], quiz=[
  ("\"There is nothing but meetings and partings in this world,\" Anne said ___ on the last day of June.", "plaintively", ["playfully", "plainly", "politely"]),
- ("Everyone cried at Mr. Phillips's goodbye speech; Anne said it was ___.", "heartrending", ["heartwarming", "hardworking", "heartless"]),
+ ("Everyone cried at Mr. Phillips's goodbye speech; Anne said it was ___.", "heartrending", ["hairsplitting", "hardworking", "heartless"]),
  ("Anne felt sorry and ___ for all the times she had drawn pictures of Mr. Phillips on her slate.", "remorseful", ["resourceful", "respectful", "restful"]),
  ("Gossip married the old minister to someone new every year of his ___ in Avonlea.", "sojourn", ["journal", "sermon", "season"]),
  ("In February the old minister had ___ and left, and Avonlea heard many new candidates preach.", "resigned", ["designed", "resided", "reminded"]),
