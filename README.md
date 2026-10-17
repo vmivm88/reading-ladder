@@ -53,7 +53,7 @@ pip install playwright pypdfium2
 python -m playwright install chromium
 ```
 
-Oz·Alice·Jungle Book은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`). 결과 PDF는 `workbooks/`에 저장됩니다.
+Oz·Alice·Jungle Book·Anne·Secret Garden은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`, `garden`). 결과 PDF는 `workbooks/`에 저장됩니다.
 
 `src/lang-tales/build_story.py`와 `src/animal-farm/build_all.py`는 원래 작업 환경의 경로를 쓰고 있어서, 다시 빌드하려면 스크립트 안의 경로를 이 저장소 기준으로 바꿔야 합니다.
 
