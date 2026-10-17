@@ -16,6 +16,9 @@ CFG = {
  "anne": dict(dir=os.path.join(HERE, "anne"), title="Anne of Green Gables", source="L. M. Montgomery, Anne of Green Gables (1908)", year="1908", sub="L. M. Montgomery's 1908 text in today's words", level="Level 3 (B1–B2)",
             meetings=[(1,1),(2,2),(3,4),(5,6),(7,8),(9,10),(11,12),(13,14),(15,15),(16,16),(17,18),(19,19),(20,21),(22,23),(24,25),(26,27),(28,28),(29,29),(30,30),(31,32),(33,33),(34,35),(36,37),(38,38)], slug="anne", unit="Chapter",
             intro="Montgomery's English is close to today's, so only about seventy old words like <i>presently</i>, <i>queer</i> and <i>beheld</i> were replaced. Anne's own old-fashioned words, such as <i>thou</i> and <i>thee</i> when she is being romantic, are kept on purpose, because they show her character. Prayers and poems are also kept as written."),
+ "garden": dict(dir=os.path.join(HERE, "garden"), title="The Secret Garden", source="Frances Hodgson Burnett, The Secret Garden (1911)", year="1911", sub="Frances Hodgson Burnett's 1911 text in today's words", level="Level 3 (B1–B2)",
+            meetings=[(1,3),(4,4),(5,6),(7,8),(9,9),(10,10),(11,12),(13,13),(14,14),(15,15),(16,17),(18,19),(20,20),(21,22),(23,23),(24,24),(25,26),(27,27)], slug="garden", unit="Chapter",
+            intro="Burnett's own English is close to today's, so only about eighty old words were replaced—mostly <i>queer</i> (now <i>strange</i>) and <i>presently</i> (now <i>soon</i>). The Yorkshire speech of Martha, Dickon, Ben Weatherstaff and Mrs. Sowerby is kept exactly as Burnett wrote it, because it is part of who they are; see the Yorkshire guide on the next page. The book was written in 1911, when Britain ruled India, and some characters speak about Indian people in ways that are hurtful and wrong by today's standards. We kept these words so the story is complete; they are worth talking about at the meeting."),
  "jungle": dict(dir=os.path.join(HERE, "jungle"), title="The Jungle Book", source="Rudyard Kipling, The Jungle Book (1894)", year="1894", sub="Rudyard Kipling's 1894 text in today's words", level="Level 3 (B2)",
             meetings=[(1,2,2),(3,4,2),(5,6,2),(7,8,2),(9,10,1),(11,12,2),(13,14,1)], slug="jungle", unit="Section",
             intro="Kipling's animals speak in old English: <i>thou art</i>, <i>hast thou</i>, <i>ye</i>. In the stories these were changed to today's English (<i>you are</i>, <i>have you</i>, <i>you</i>), about 300 changes in all. The songs are kept exactly as written, because changing a word would break the rhyme. The Jungle's Master Word, <i>We be of one blood, ye and I</i>, is also kept as Kipling wrote it.",
@@ -31,11 +34,13 @@ def hm(m):
 MEETINGS = CFG["meetings"]
 M = json.load(open(os.path.join(CFG["dir"], "modern.json"), encoding="utf-8"))
 sys.path.insert(0, CFG["dir"])
-WB, OLD, IDIOMS, OLD_MARKS, IDIOM_MARKS = {}, {}, {}, {}, {}
+WB, OLD, IDIOMS, OLD_MARKS, IDIOM_MARKS, DIALECT = {}, {}, {}, {}, {}, {}
+GUIDE = ""
 for mod in sorted(f[:-3] for f in os.listdir(CFG["dir"]) if re.match(CFG["slug"] + r"_wb\d+\.py$", f)):
     w = importlib.import_module(mod)
     WB.update(w.WB); OLD.update(getattr(w, "OLD", {})); IDIOMS.update(getattr(w, "IDIOMS", {}))
     OLD_MARKS.update(getattr(w, "OLD_MARKS", {})); IDIOM_MARKS.update(getattr(w, "IDIOM_MARKS", {}))
+    DIALECT.update(getattr(w, "DIALECT", {})); GUIDE = getattr(w, "GUIDE", "") or GUIDE
 stem = lambda w: w.lower()[:max(3, len(w) - 2)]
 def roman_title(t, idx=None):
     m = re.match(r"(?i)Chapter ([IVXLC]+)\.? (.*)", t)
@@ -72,6 +77,15 @@ for idx, c in enumerate(M, 1):
         else: probs.append(f"ch{n}: old word {w} not found")
     for w in IDIOM_MARKS.get(n, []): text = wrap(text, w, "[[", "]]")
     CH.append(dict(n=n, name=name, text=text, changes=c["changes"], words=len(" ".join(p["t"] for p in paras).split())))
+# dialect words: mark the first time each one appears in the book (optionally inside an anchor phrase)
+for key, val in DIALECT.items():
+    anchor = val[3] if len(val) > 3 and val[3] else key
+    for c in CH:
+        m = re.search(rf"(?<![\w*{{\[%’']){re.escape(anchor)}(?![\w])", c["text"], re.I)
+        if m:
+            k = re.search(re.escape(key), m.group(0), re.I); s0 = m.start() + k.start(); s1 = s0 + len(key)
+            c["text"] = c["text"][:s0] + "%%" + c["text"][s0:s1] + "%%" + c["text"][s1:]; break
+    else: probs.append(f"dialect '{key}' not found")
 for n, d in WB.items():
     words = [v[0] for v in d["vocab"]]
     for s_, a, ds in d["quiz"]:
@@ -91,6 +105,10 @@ span.old { border-bottom: 2px dotted #8a5a2b; }
 span.old sup, span.idi sup { font-size: 7pt; color: #8a5a2b; margin-left: 1px; }
 span.idi { border-bottom: 2px solid #6f93c9; }
 span.idi sup { color: #3f6aa8; }
+span.dia { border-bottom: 2px solid #7fb07a; }
+span.dia sup { font-size: 7pt; color: #3e7a3a; margin-left: 1px; }
+.guide td { font-size: 10pt; padding: 3px 6px; border-bottom: 1px solid #e6dfcf; vertical-align: top; }
+.guide td.d { font-weight: 700; color: #3e7a3a; width: 24%; }
 .legend { display: grid; gap: 6px; margin-top: 8px; }
 .legend div { font-size: 10.5pt; }
 .wc { font-size: 9pt; color: #a08a5a; margin-bottom: 12px; letter-spacing: 1px; }
@@ -112,6 +130,7 @@ def mark(text):
         p = re.sub(r"\*\*(.+?)\*\*", r"<b class='v'>\1</b>", p)
         p = re.sub(r"\{\{(.+?)\}\}", r"<span class='old'>\1<sup>†</sup></span>", p)
         p = re.sub(r"\[\[(.+?)\]\]", r"<span class='idi'>\1<sup>※</sup></span>", p)
+        p = re.sub(r"%%(.+?)%%", r"<span class='dia'>\1<sup>Y</sup></span>", p)
         if p.startswith("@@BREAK@@"):
             out.append(f"<div class='mbreak'>MEETING {p[9:]} STARTS HERE</div>"); continue
         if p.startswith("@@POEM@@"):
@@ -131,6 +150,7 @@ LEGEND = """<div class='legend'>
 <div><b class='v'>highlighted</b> — a word studied in the workbook</div>
 <div><span class='old'>dotted<sup>†</sup></span> — an old word (or old meaning) kept on purpose (see the workbook)</div>
 <div><span class='idi'>blue line<sup>※</sup></span> — an old expression that people no longer use (see the workbook)</div></div>"""
+if DIALECT: LEGEND = LEGEND[:-6] + "<div><span class='dia'>green line<sup>Y</sup></span> — a Yorkshire dialect word, kept as the character says it (see the Yorkshire guide)</div></div>"
 
 def _groups():
     k = 1; out = []
@@ -157,6 +177,7 @@ def reader(path):
     p.append("<div class='page'><h2>How to Read This Book</h2><div>The original story is not changed. " + CFG["intro"] + " Three kinds of marks help you:</div>" + LEGEND +
              "<h3>READING TIME</h3><div>Most English learners read about 100 words a minute (1,000 words ≈ 10 minutes). With the workbook, plan about twice as long. Our book club reads about 4,300 words per meeting.</div>"
              "<h3>MEETINGS</h3><table class='chars'>" + meeting_rows() + "</table></div>")
+    if GUIDE: p.append(GUIDE)
     for c in CH:
         p.append(f"<div class='page'><div class='chlabel'>{CFG['unit'].upper()} {c['n']} · MEETING {meeting_of(c['n'])}</div><h2>{e(c['name'])}</h2><div class='wc'>{c['words']} WORDS · ABOUT {mins(c['words'])} MIN</div>{mark(c['text'])}</div>")
     p.append("</body></html>")
@@ -177,6 +198,7 @@ def workbook(path, chapters):
     p.append(cover(f"Workbook · {rng}", CFG.get("wb_cover", "Use with the reader. For each chapter: 10 word cards, 10 fill-in-the-blank questions, notes on old words and old expressions, the list of updated words, and questions to talk about.")))
     p.append("<div class='page'><h2>How to Use This Workbook</h2><div>" + CFG.get("wb_howto", "1. Read one chapter in the reader.<br>2. Study the 10 word cards.<br>3. Do the 10 practice questions without looking back.<br>"
              "4. Read the notes on old words (†) and old expressions (※).<br>5. Choose a question to talk about at the meeting.") + "</div>" + LEGEND + "<h3>MEETINGS</h3><table class='chars'>" + meeting_rows() + "</table></div>")
+    if GUIDE: p.append(GUIDE)
     for c in CH:
         n = c["n"]
         if n not in chapters or n not in WB: continue
@@ -206,9 +228,10 @@ def workbook(path, chapters):
                 p.append("</div>")
         olds = list(dict.fromkeys(re.findall(r"\{\{(.+?)\}\}", c["text"])))
         idis = list(dict.fromkeys(re.findall(r"\[\[(.+?)\]\]", c["text"])))
+        dias = list(dict.fromkeys(re.findall(r"%%(.+?)%%", c["text"])))
         talk_here = not wb["quiz"] and wb.get("discussion")
-        if olds or idis or c["changes"] or talk_here:
-            p.append(f"<div class='page'>{lab()}<h2>{'Song Notes' if not nv else 'Old Words &amp; Expressions'}</h2>")
+        if olds or idis or dias or c["changes"] or talk_here:
+            p.append(f"<div class='page'>{lab()}<h2>{'Song Notes' if not nv else ('Word Notes' if DIALECT else 'Old Words &amp; Expressions')}</h2>")
             if not nv: p.append("<p>The songs are kept exactly as Kipling wrote them. These notes explain the old words.</p>" if CFG["slug"] == "jungle" else "")
             if olds:
                 p.append("<h3>OLD WORDS KEPT †</h3>")
@@ -220,6 +243,13 @@ def workbook(path, chapters):
                 for k_ in idis:
                     ko, mod, ex = IDIOMS[k_]
                     p.append(f"<div class='note-box'><span class='h'>{e(k_)}</span><span class='ko'>({e(ko)})</span><div class='m'><b>Today:</b> {e(mod)}</div><div class='m' style='color:#666'>{e(ex)}</div></div>")
+            if dias:
+                p.append("<h3>YORKSHIRE WORDS <span style='color:#3e7a3a'>Y</span></h3><table class='ch guide'>")
+                dk = {k.lower(): k for k in DIALECT}
+                for k_ in dias:
+                    std, ko, note = DIALECT[dk[k_.lower()]][:3]
+                    p.append(f"<tr><td class='d'>{e(k_)}</td><td>= {e(std)} <span class='ko' style='color:#8a5a2b'>({e(ko)})</span><div style='color:#666;font-size:9.5pt'>{e(note)}</div></td></tr>")
+                p.append("</table>")
             if c["changes"]:
                 p.append(f"<h3>WORDS WE UPDATED</h3><table class='ch'><tr><td><b>{CFG['year']}</b></td><td><b>Today</b></td></tr>" + "".join(f"<tr><td class='o'>{e(a)}</td><td>{e(b)}</td></tr>" for a, b in c["changes"]) + "</table>")
             if talk_here:

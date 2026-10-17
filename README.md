@@ -12,6 +12,7 @@
 | 3 | Alice's Adventures in Wonderland (Lewis Carroll, 1865) | 본문 + 워크북 | 26,280단어 | 6회 |
 | 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 + 워크북 | 50,750단어 | 12회 |
 | 3 | Anne of Green Gables (L. M. Montgomery, 1908) | 본문 + 워크북 | 101,968단어 | 24회 |
+| 3 | The Secret Garden (Frances Hodgson Burnett, 1911) | 본문 + 워크북(제작 중) | 80,315단어 | 18회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
 
@@ -39,7 +40,8 @@ src/animal-farm/        Animal Farm 워크북 데이터와 빌드 스크립트
 src/oz/                 Oz 원문, 단어 교체 규칙(modernize.py), 워크북 데이터
 src/alice/, src/jungle/ Alice·Jungle Book 장별 원문(chapters.json), 단어 교체 규칙, 표시 데이터
 src/anne/               Anne 장별 원문, 단어 교체 규칙, 워크북 데이터
-src/book_build.py       Oz·Alice·Jungle Book·Anne 본문/워크북 PDF 빌드 스크립트
+src/garden/             Secret Garden 장별 원문, 단어 교체 규칙, 요크셔 사투리 해설, 워크북 데이터
+src/book_build.py       Oz·Alice·Jungle Book·Anne·Secret Garden 본문/워크북 PDF 빌드 스크립트
 ```
 
 ## PDF 다시 만들기

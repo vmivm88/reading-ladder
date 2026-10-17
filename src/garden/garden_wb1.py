@@ -1,0 +1,200 @@
+# The Secret Garden workbook, chapters 1–7. vocab: lemma, surface-in-text, pos, stress, ipa, korean, collocations, ex1, ex2 (examples are original)
+import json, os, re
+
+WB = {
+1: dict(vocab=[
+ ("sickly", "sickly", "adj.", "SICK-ly", "/ˈsɪkli/", "병약한, 허약한", "a sickly child · look sickly", "He was a sickly child but grew up strong.", "The plant looked pale and sickly."),
+ ("fretful", "fretful", "adj.", "FRET-ful", "/ˈfretfəl/", "칭얼거리는, 짜증 내는", "a fretful baby · become fretful", "The fretful baby cried all night.", "She gets fretful when she is tired."),
+ ("tyrannical", "tyrannical", "adj.", "ty-RAN-ni-cal", "/tɪˈrænɪkl/", "폭군 같은, 제멋대로 구는", "a tyrannical boss · tyrannical rule", "The country suffered under a tyrannical king.", "My little brother can be tyrannical about the TV."),
+ ("governess", "governesses", "n.", "GOV-er-ness", "/ˈɡʌvərnəs/", "(옛날 상류층 가정의) 여자 가정교사", "hire a governess · an English governess", "In old novels, rich children often had a governess.", "The governess taught them French and piano."),
+ ("frightfully", "frightfully", "adv.", "FRIGHT-ful-ly", "/ˈfraɪtfəli/", "몹시, 지독하게 (영국식)", "frightfully hot · frightfully sorry", "It was a frightfully cold morning.", "I'm frightfully sorry to be late."),
+ ("bewilderment", "bewilderment", "n.", "be-WIL-der-ment", "/bɪˈwɪldərmənt/", "어리둥절함, 당혹", "in bewilderment · total bewilderment", "She stared at the map in bewilderment.", "To my bewilderment, the shop was closed."),
+ ("affectionate", "affectionate", "adj.", "af-FEC-tion-ate", "/əˈfekʃənət/", "다정한, 애정 어린", "an affectionate hug · affectionate toward", "Our dog is very affectionate.", "She gave her son an affectionate kiss."),
+ ("stricken", "stricken", "adj.", "STRICK-en", "/ˈstrɪkən/", "(공포·병 등에) 사로잡힌, 시달리는", "panic-stricken · grief-stricken", "The panic-stricken crowd ran for the exits.", "She was grief-stricken after her loss."),
+ ("desolation", "desolation", "n.", "des-o-LA-tion", "/ˌdesəˈleɪʃən/", "황폐함, 쓸쓸함", "a scene of desolation · a sense of desolation", "After the storm, the town was a scene of desolation.", "He felt a deep desolation after she left."),
+ ("disgracefully", "disgracefully", "adv.", "dis-GRACE-ful-ly", "/dɪsˈɡreɪsfəli/", "수치스럽게, 지독하게", "behave disgracefully · disgracefully dirty", "The fans behaved disgracefully.", "The hotel room was disgracefully dirty."),
+], quiz=[
+ ("As a baby, Mary was ___, fretful and ugly, so she was kept out of the way.", "sickly", ["silky", "slightly", "sickening"]),
+ ("Mary was a sickly, ___ little girl who always seemed unhappy.", "fretful", ["fruitful", "faithful", "forgetful"]),
+ ("By the age of six, Mary was as ___ and selfish a little pig as ever lived.", "tyrannical", ["typical", "theatrical", "technical"]),
+ ("Several English ___ came to teach Mary, but they all left quickly.", "governesses", ["goddesses", "governments", "princesses"]),
+ ("One ___ hot morning, Mary woke up feeling very cross.", "frightfully", ["fruitfully", "faithfully", "fretfully"]),
+ ("During the confusion and ___ of the second day, Mary hid in the nursery and was forgotten.", "bewilderment", ["bereavement", "betterment", "amusement"]),
+ ("Mary did not cry for her nurse, because she was not an ___ child.", "affectionate", ["affordable", "affected", "accurate"]),
+ ("Everyone was too panic-___ to think of a little girl no one was fond of.", "stricken", ["striking", "strictly", "sticky"]),
+ ("\"What ___!\" one of the men said when they entered the empty bungalow.", "desolation", ["decoration", "destination", "dedication"]),
+ ("Mary was hungry and felt ___ neglected when the officers finally found her.", "disgracefully", ["gracefully", "dreadfully", "disgustingly"]),
+], discussion=[
+ "Mary's parents never spent time with her, and servants always gave her what she wanted. How did this make her the way she is?",
+ "Mary is not sad that her nurse died—only angry that no one remembers her. Can you feel sorry for a child who is unkind? Why?",
+]),
+2: dict(vocab=[
+ ("shabby", "shabby", "adj.", "SHAB-by", "/ˈʃæbi/", "낡은, 허름한", "shabby clothes · a shabby room", "He wore a shabby old coat.", "The hotel was cheap and shabby."),
+ ("quarrel", "quarreling", "v./n.", "QUAR-rel", "/ˈkwɔːrəl/", "다투다, 말다툼(하다)", "quarrel with · quarrel about", "The kids were quarreling over a toy.", "They had a quarrel about money."),
+ ("impudent", "impudent", "adj.", "IM-pu-dent", "/ˈɪmpjədənt/", "건방진, 버릇없는", "an impudent child · an impudent question", "The impudent boy stuck out his tongue.", "What an impudent thing to say!"),
+ ("tease", "teasing", "v.", "TEASE", "/tiːz/", "놀리다, 괴롭히다", "tease someone about · stop teasing", "Stop teasing your sister!", "They teased him about his hair."),
+ ("contrary", "contrary", "adj.", "con-TRAR-y", "/kənˈtreri/", "고집스럽게 반대로 하는, 심술궂은; 반대의", "quite contrary · on the contrary", "The contrary child said no to everything.", "On the contrary, I loved the movie."),
+ ("desolate", "desolate", "adj.", "DES-o-late", "/ˈdesələt/", "황량한, 쓸쓸한", "a desolate place · feel desolate", "The house stood alone on a desolate hill.", "She felt desolate after her friend moved away."),
+ ("pityingly", "pityingly", "adv.", "PIT-y-ing-ly", "/ˈpɪtiɪŋli/", "불쌍하다는 듯이", "look pityingly · smile pityingly", "She looked at me pityingly.", "\"Poor thing,\" he said pityingly."),
+ ("unattractive", "unattractive", "adj.", "un-at-TRAC-tive", "/ˌʌnəˈtræktɪv/", "매력 없는, 호감이 안 가는", "unattractive ways · an unattractive offer", "His rude manners are very unattractive.", "The job offer was unattractive."),
+ ("talkative", "talkative", "adj.", "TALK-a-tive", "/ˈtɔːkətɪv/", "말하기 좋아하는, 수다스러운", "a talkative person · in a talkative mood", "My aunt is very talkative.", "He was in a talkative mood tonight."),
+ ("pettish", "pettish", "adj.", "PET-tish", "/ˈpetɪʃ/", "토라지는, 심통 부리는", "a pettish child · pettish behavior", "The pettish girl refused to eat.", "\"I don't care,\" he said in a pettish voice."),
+], quiz=[
+ ("The clergyman's five children wore ___ clothes and were always quarreling.", "shabby", ["shaggy", "chubby", "shady"]),
+ ("The children were always ___ and snatching toys from each other.", "quarreling", ["quivering", "questioning", "squirreling"]),
+ ("Basil was a little boy with ___ blue eyes and a turned-up nose.", "impudent", ["imprudent", "important", "impatient"]),
+ ("Basil was always ___ his sisters, so he began to sing a rhyme at Mary.", "teasing", ["tearing", "tasting", "teaching"]),
+ ("The children called her \"Mistress Mary Quite ___.\"", "Contrary", ["Contrast", "Ordinary", "Country"]),
+ ("Basil said Mary's uncle lived in a great, big, ___ old house in the country.", "desolate", ["delicate", "decorated", "dedicated"]),
+ ("\"She is such a plain child,\" Mrs. Crawford said ___.", "pityingly", ["pettily", "politely", "playfully"]),
+ ("Mrs. Crawford said Mary had the most ___ ways she had ever seen in a child.", "unattractive", ["untouchable", "unbreakable", "unaffected"]),
+ ("Mrs. Medlock was a ___ woman, so she told Mary about the Manor during the trip.", "talkative", ["tentative", "tactful", "talented"]),
+ ("Burnett explains that \"marred\" is a Yorkshire word meaning spoiled and ___.", "pettish", ["pretty", "plenty", "polish"]),
+], discussion=[
+ "The children's rhyme \"Mistress Mary, quite contrary\" made Mary furious. Did you have a nickname as a child? How did it make you feel?",
+ "Mrs. Crawford compares Mary to her pretty mother. Is it fair to compare children with their parents? Why do people do it?",
+]),
+3: dict(vocab=[
+ ("lull", "lulled", "v.", "LULL", "/lʌl/", "(소리로) 잠들게 하다, 달래다", "lulled to sleep · lull a baby", "The sound of the waves lulled me to sleep.", "She lulled the baby with a song."),
+ ("accent", "accent", "n.", "AC-cent", "/ˈæksent/", "억양, 말투", "a strong accent · a Yorkshire accent", "He speaks English with a French accent.", "I love her Scottish accent."),
+ ("coachman", "coachman", "n.", "COACH-man", "/ˈkoʊtʃmən/", "마부", "the coachman drove · a coachman's whip", "The coachman stopped the horses at the door.", "In old times, rich families had their own coachman."),
+ ("vicarage", "vicarage", "n.", "VIC-ar-age", "/ˈvɪkərɪdʒ/", "목사관", "the village vicarage · live in a vicarage", "The vicar lives in the vicarage next to the church.", "We passed an old stone vicarage."),
+ ("expanse", "expanse", "n.", "ex-PANSE", "/ɪkˈspæns/", "넓게 펼쳐진 공간", "a vast expanse of · an expanse of sky", "We saw a huge expanse of blue sea.", "The desert was an endless expanse of sand."),
+ ("singular", "singular", "adj.", "SIN-gu-lar", "/ˈsɪŋɡjələr/", "(격식) 기이한, 독특한; 단수의", "a singular sound · a singular beauty", "There was a singular silence in the house.", "\"Child\" is singular; \"children\" is plural."),
+ ("massive", "massive", "adj.", "MAS-sive", "/ˈmæsɪv/", "거대한, 육중한", "a massive door · massive damage", "A massive tree fell in the storm.", "The project was a massive success."),
+ ("husky", "husky", "adj.", "HUS-ky", "/ˈhʌski/", "(목소리가) 허스키한, 쉰", "a husky voice · sound husky", "He spoke in a low, husky voice.", "My voice is husky because I have a cold."),
+ ("manservant", "manservant", "n.", "MAN-ser-vant", "/ˈmænsɜːrvənt/", "남자 하인", "a loyal manservant", "The manservant opened the front door.", "The old lord had one faithful manservant."),
+ ("unceremoniously", "unceremoniously", "adv.", "un-cer-e-MO-ni-ous-ly", "/ˌʌnserəˈmoʊniəsli/", "격식 없이, 무뚝뚝하게", "unceremoniously dumped · say unceremoniously", "He was unceremoniously asked to leave.", "She dropped her bag unceremoniously on the floor."),
+], quiz=[
+ ("Mary fell asleep in the carriage, ___ by the splashing of the rain against the windows.", "lulled", ["lured", "pulled", "dulled"]),
+ ("At the station Mrs. Medlock spoke with a Yorkshire ___ herself.", "accent", ["ascent", "access", "assent"]),
+ ("The station-master shut the door and climbed up beside the ___.", "coachman", ["coach", "chairman", "coastguard"]),
+ ("They passed a church, a ___ and a little shop with toys and sweets.", "vicarage", ["village", "vintage", "beverage"]),
+ ("The road ended in a great ___ of dark, which spread all around them.", "expanse", ["expense", "expansion", "experience"]),
+ ("A rising wind made a ___, wild, low, rushing sound.", "singular", ["singing", "simple", "similar"]),
+ ("The huge front door was made of ___ panels of oak with big iron nails.", "massive", ["passive", "massage", "messy"]),
+ ("\"You are to take her to her room,\" a thin old man said in a ___ voice.", "husky", ["hasty", "dusky", "hefty"]),
+ ("A ___ opened the door for them.", "manservant", ["mansion", "maidservant", "maneuver"]),
+ ("Mrs. Medlock said ___, \"Well, here you are! This room and the next are where you'll live.\"", "unceremoniously", ["ceremoniously", "unconsciously", "uncomfortably"]),
+], discussion=[
+ "Mary is told she must keep to her two rooms in a house with a hundred rooms. How would you feel? What would you do first?",
+ "Mary hears the moor before she sees it and thinks it might be the sea. Have you ever arrived somewhere new in the dark? What did you notice first?",
+]),
+4: dict(vocab=[
+ ("obsequious", "obsequious", "adj.", "ob-SE-qui-ous", "/əbˈsiːkwiəs/", "아첨하는, 지나치게 굽실거리는", "an obsequious waiter · obsequious smile", "The obsequious salesman agreed with everything.", "I don't like his obsequious manner."),
+ ("servile", "servile", "adj.", "SER-vile", "/ˈsɜːrvaɪl/", "비굴한, 노예 같은", "servile behavior · servile obedience", "He hated his servile job.", "Don't be so servile to the boss."),
+ ("presume", "presume", "v.", "pre-SUME", "/prɪˈzuːm/", "감히 ~하다; 추정하다", "presume to · I presume", "I wouldn't presume to tell you what to do.", "You're the new teacher, I presume?"),
+ ("subservient", "subservient", "adj.", "sub-SER-vi-ent", "/səbˈsɜːrviənt/", "굴종하는, 복종하는", "subservient to · a subservient role", "In the past, wives were expected to be subservient.", "She refused to be subservient to anyone."),
+ ("incredulously", "incredulously", "adv.", "in-CRED-u-lous-ly", "/ɪnˈkredʒələsli/", "믿기지 않는다는 듯이", "stare incredulously · ask incredulously", "\"You've never seen snow?\" he asked incredulously.", "She shook her head incredulously."),
+ ("outspokenly", "outspokenly", "adv.", "out-SPO-ken-ly", "/aʊtˈspoʊkənli/", "거침없이, 솔직하게", "speak outspokenly · outspokenly critical", "She spoke outspokenly about the problem.", "He was outspokenly against the plan."),
+ ("frankness", "frankness", "n.", "FRANK-ness", "/ˈfræŋknəs/", "솔직함", "with frankness · blunt frankness", "I appreciate your frankness.", "She answered with surprising frankness."),
+ ("crustily", "crustily", "adv.", "CRUST-i-ly", "/ˈkrʌstɪli/", "퉁명스럽게, 무뚝뚝하게", "answer crustily · say crustily", "\"What do you want?\" the old man said crustily.", "He answered crustily, without looking up."),
+ ("conceited", "conceited", "adj.", "con-CEIT-ed", "/kənˈsiːtɪd/", "자만하는, 우쭐대는", "a conceited person · conceited about", "He's so conceited about his looks.", "Don't be conceited—others helped you win."),
+ ("uncompanionable", "uncompanionable", "adj.", "un-com-PAN-ion-a-ble", "/ˌʌnkəmˈpænjənəbl/", "붙임성 없는, 어울리기 싫어하는", "look uncompanionable · an uncompanionable man", "The old fisherman was quiet and uncompanionable.", "She seemed uncompanionable, but she was just shy."),
+], quiz=[
+ ("Mary's servants in India were ___ and servile, always bowing to their masters.", "obsequious", ["obvious", "oblivious", "religious"]),
+ ("The Indian servants were obsequious and ___, unlike Martha.", "servile", ["sterile", "fertile", "senile"]),
+ ("In India, servants did not ___ to talk to their masters as equals.", "presume", ["resume", "consume", "perfume"]),
+ ("A well-trained lady's maid would have been more ___ and respectful than Martha.", "subservient", ["subsequent", "sufficient", "superior"]),
+ ("\"Tha' doesn't want thy porridge!\" Martha exclaimed ___.", "incredulously", ["incredibly", "increasingly", "indifferently"]),
+ ("\"It would do thee good to try it,\" Martha said ___.", "outspokenly", ["outwardly", "outrageously", "obligingly"]),
+ ("It is a Yorkshire habit to say what you think with blunt ___.", "frankness", ["franchise", "fondness", "freshness"]),
+ ("\"There was nothin' to prevent thee,\" Ben Weatherstaff answered ___.", "crustily", ["crustacean", "cruelly", "curiously"]),
+ ("Ben chuckled, \"He's a ___ one. He likes to hear folk talk about him.\"", "conceited", ["concerted", "connected", "contented"]),
+ ("When Mary asked about the door, Ben drove in his spade and looked ___ again.", "uncompanionable", ["uncomfortable", "unconditional", "unquestionable"]),
+], discussion=[
+ "Martha talks to Mary as an equal, not like a servant. Why does this surprise Mary? Is it good for her?",
+ "Ben Weatherstaff says he and Mary are \"a good bit alike.\" In what ways are they alike?",
+]),
+5: dict(vocab=[
+ ("appetite", "appetite", "n.", "AP-pe-tite", "/ˈæpɪtaɪt/", "식욕", "a good appetite · lose your appetite", "Fresh air gave me a big appetite.", "He lost his appetite when he was sick."),
+ ("neglected", "neglected", "adj./v.", "ne-GLECT-ed", "/nɪˈɡlektɪd/", "방치된, 돌보지 않은", "a neglected garden · feel neglected", "The neglected house was full of weeds.", "The child felt neglected by his busy parents."),
+ ("sallow", "sallow", "adj.", "SAL-low", "/ˈsæloʊ/", "(얼굴이) 누르스름한, 혈색 나쁜", "sallow skin · a sallow face", "He looked sallow after weeks in bed.", "Her sallow cheeks became pink with fresh air."),
+ ("languid", "languid", "adj.", "LAN-guid", "/ˈlæŋɡwɪd/", "나른한, 축 처진", "feel languid · a languid afternoon", "The heat made everyone feel languid.", "She gave a languid wave."),
+ ("cobweb", "cobwebs", "n.", "COB-web", "/ˈkɑːbweb/", "거미줄", "blow the cobwebs away · covered in cobwebs", "A walk will blow the cobwebs away.", "The attic was covered in cobwebs."),
+ ("drowsy", "drowsy", "adj.", "DROW-sy", "/ˈdraʊzi/", "졸린, 나른한", "feel drowsy · a drowsy afternoon", "This medicine may make you drowsy.", "I felt warm and drowsy by the fire."),
+ ("novelty", "novelty", "n.", "NOV-el-ty", "/ˈnɑːvəlti/", "새로운 것, 신기함", "a novelty · the novelty wears off", "Living in a big city was a novelty for her.", "The novelty of the game wore off quickly."),
+ ("buffet", "buffeting", "v.", "BUF-fet", "/ˈbʌfɪt/", "(바람·파도가) 세게 치다", "buffeted by the wind · buffeting waves", "The small boat was buffeted by the waves.", "Strong winds were buffeting the house."),
+ ("distinguish", "distinguish", "v.", "dis-TIN-guish", "/dɪˈstɪŋɡwɪʃ/", "구별하다", "distinguish A from B · hard to distinguish", "I can't distinguish the twins.", "Can you distinguish this sound from the wind?"),
+ ("stubbornly", "stubbornly", "adv.", "STUB-born-ly", "/ˈstʌbərnli/", "고집스럽게, 완강하게", "stubbornly refuse · stubbornly insist", "He stubbornly refused to say sorry.", "The stain stubbornly stayed on my shirt."),
+], quiz=[
+ ("Martha said Mary was lucky to have victuals as well as ___.", "appetite", ["apatite", "appendix", "parasite"]),
+ ("One part of the ivy-covered wall looked as if it had been ___ for a long time.", "neglected", ["selected", "collected", "detected"]),
+ ("Poor little thin, ___, ugly Mary looked almost pretty for a moment as she laughed at the robin.", "sallow", ["shallow", "swallow", "hollow"]),
+ ("In India, Mary had always felt hot and too ___ to care about anything.", "languid", ["liquid", "lucid", "languish"]),
+ ("The fresh wind from the moor began to blow the ___ out of her young brain.", "cobwebs", ["cowboys", "carpets", "cabins"]),
+ ("At supper Mary felt hungry and ___ and comfortable.", "drowsy", ["dressy", "rowdy", "dowdy"]),
+ ("To Martha, a child who had lived in India was ___ enough to be interesting.", "novelty", ["royalty", "poverty", "novel"]),
+ ("The wind roared round the house as if a giant were ___ the walls to break in.", "buffeting", ["buttoning", "budgeting", "batting"]),
+ ("At first Mary could scarcely ___ the strange sound from the wind itself.", "distinguish", ["extinguish", "diminish", "disguise"]),
+ ("\"It was th' wind,\" said Martha ___ when Mary asked about the crying.", "stubbornly", ["suddenly", "sternly", "suitably"]),
+], discussion=[
+ "After only a few days outside, Mary is hungry for the first time. What changes in Mary's body and mood do you notice?",
+ "Martha says the crying was \"th' wind\" or the scullery-maid. Do you think she is telling the truth? Why might she hide something?",
+]),
+6: dict(vocab=[
+ ("torrent", "torrents", "n.", "TOR-rent", "/ˈtɔːrənt/", "급류; 억수 같은 비", "rain in torrents · a torrent of words", "The rain came down in torrents.", "He let out a torrent of angry words."),
+ ("perplexed", "perplexed", "adj.", "per-PLEXED", "/pərˈplekst/", "당혹한, 어리둥절한", "look perplexed · perplexed by", "She looked perplexed by the question.", "I was perplexed by his silence."),
+ ("resent", "resent", "v.", "re-SENT", "/rɪˈzent/", "분하게 여기다, 못마땅해하다", "resent being told · resent someone", "I resent being treated like a child.", "He resented his brother's success."),
+ ("abundant", "abundant", "adj.", "a-BUN-dant", "/əˈbʌndənt/", "풍부한, 넉넉한", "abundant food · abundant evidence", "The region has abundant water.", "There was abundant food at the party."),
+ ("rambling", "rambling", "adj.", "RAM-bling", "/ˈræmblɪŋ/", "(건물이) 제멋대로 뻗어 나간; (말이) 장황한", "a rambling house · a rambling speech", "They live in a big, rambling farmhouse.", "His rambling speech went on for an hour."),
+ ("inlaid", "inlaid", "adj.", "IN-laid", "/ˌɪnˈleɪd/", "상감 세공된, 박아 넣은", "inlaid with pearl · inlaid wood", "The box was inlaid with gold.", "She has an inlaid wooden table."),
+ ("portrait", "portrait", "n.", "POR-trait", "/ˈpɔːrtrət/", "초상화", "paint a portrait · a family portrait", "A portrait of the queen hung on the wall.", "We had a family portrait taken."),
+ ("ornament", "ornaments", "n.", "OR-na-ment", "/ˈɔːrnəmənt/", "장식품", "Christmas ornaments · glass ornaments", "We hung ornaments on the tree.", "The shelf was full of small ornaments."),
+ ("palanquin", "palanquins", "n.", "pal-an-QUIN", "/ˌpælənˈkiːn/", "(인도 등의) 가마", "carried in a palanquin", "The princess traveled in a palanquin.", "Four men carried the palanquin."),
+ ("cuddle", "cuddled", "v.", "CUD-dle", "/ˈkʌdl/", "껴안다; 웅크리고 붙어 있다", "cuddle up · cuddle a baby", "The puppies cuddled up together.", "She cuddled her little son."),
+], quiz=[
+ ("The next day the rain poured down in ___ again.", "torrents", ["torments", "tournaments", "currents"]),
+ ("When Mary said she had nothing to play with, Martha looked ___.", "perplexed", ["perfected", "persuaded", "perfumed"]),
+ ("Mary had forgotten to ___ Martha's familiar talk; she began to find it interesting.", "resent", ["present", "repent", "relent"]),
+ ("The servants below stairs ate four or five ___ meals every day.", "abundant", ["abandoned", "absent", "redundant"]),
+ ("There seemed to be no one in the huge, ___ house but Mary herself.", "rambling", ["rumbling", "gambling", "trembling"]),
+ ("One bedroom had embroidered hangings and ___ furniture like she had seen in India.", "inlaid", ["unpaid", "inland", "invalid"]),
+ ("Over the mantel was another ___ of the stiff, plain little girl.", "portrait", ["portal", "portion", "pursuit"]),
+ ("Nearly every room had curious pieces of furniture and curious ___.", "ornaments", ["arguments", "ointments", "monuments"]),
+ ("Some of the little ivory elephants had their mahouts or ___ on their backs.", "palanquins", ["pelicans", "mannequins", "penguins"]),
+ ("In the cushion, six baby mice were ___ up asleep near their mother.", "cuddled", ["curdled", "coddled", "puddled"]),
+], discussion=[
+ "Mary explores the hundred rooms alone. If you could explore an old house, what would you most like to find?",
+ "Mary finds a mouse family and doesn't feel so lonely. Why does finding the mice matter to her?",
+]),
+7: dict(vocab=[
+ ("rainstorm", "rainstorm", "n.", "RAIN-storm", "/ˈreɪnstɔːrm/", "폭풍우", "a heavy rainstorm · during a rainstorm", "We got caught in a rainstorm.", "The rainstorm lasted all night."),
+ ("fleece", "fleece", "n.", "FLEECE", "/fliːs/", "양털; 양털 같은 것", "snow-white fleece · a fleece jacket", "The clouds looked like white fleece.", "I wore my warm fleece jacket."),
+ ("dialect", "dialects", "n.", "DI-a-lect", "/ˈdaɪəlekt/", "방언, 사투리", "a local dialect · speak in dialect", "My grandmother speaks a southern dialect.", "Many dialects are disappearing."),
+ ("reflectively", "reflectively", "adv.", "re-FLEC-tive-ly", "/rɪˈflektɪvli/", "곰곰이 생각하며", "look reflectively · say reflectively", "He stared reflectively out of the window.", "\"Maybe you're right,\" she said reflectively."),
+ ("coax", "coaxed", "v.", "COAX", "/koʊks/", "구슬리다, 달래다", "coax someone into · coax a cat out", "She coaxed the cat out from under the bed.", "He coaxed his son into eating vegetables."),
+ ("flirt", "flirted", "v.", "FLIRT", "/flɜːrt/", "(꼬리 등을) 홱 움직이다; 추파를 던지다", "flirt with someone · flirt a tail", "The bird flirted its tail and flew off.", "He was flirting with the waitress."),
+ ("startle", "startle", "v.", "STAR-tle", "/ˈstɑːrtl/", "깜짝 놀라게 하다", "startle someone · be startled by", "Sorry, I didn't mean to startle you.", "The loud noise startled the birds."),
+ ("perennial", "perennial", "adj.", "per-EN-ni-al", "/pəˈreniəl/", "다년생의; 계속되는", "perennial plants · a perennial problem", "Roses are perennial plants.", "Traffic is a perennial problem here."),
+ ("shrub", "shrubs", "n.", "SHRUB", "/ʃrʌb/", "관목, 키 작은 나무", "plant shrubs · flowering shrubs", "We planted shrubs along the fence.", "Small birds hide in the shrubs."),
+ ("persuade", "persuade", "v.", "per-SUADE", "/pərˈsweɪd/", "설득하다", "persuade someone to · try to persuade", "I persuaded him to come with us.", "Nothing could persuade her to change her mind."),
+], quiz=[
+ ("The ___ had ended, and the wind had swept away the gray mist in the night.", "rainstorm", ["rainbow", "brainstorm", "raindrop"]),
+ ("High in the blue sky floated small clouds of snow-white ___.", "fleece", ["fleet", "flesh", "fence"]),
+ ("In India the natives spoke different ___, so Mary was not surprised by Martha's words.", "dialects", ["dialogues", "diets", "diagrams"]),
+ ("\"I wonder,\" Martha said, staring at Mary ___, \"what Dickon would think of thee?\"", "reflectively", ["respectively", "reflexively", "effectively"]),
+ ("Mary chirped and talked and ___, and the robin hopped and twittered.", "coaxed", ["coached", "coasted", "cooked"]),
+ ("The robin hopped, ___ his tail and twittered as if he were talking.", "flirted", ["fainted", "filtered", "flattered"]),
+ ("Mary would never put out her hand toward the robin or ___ him in the least.", "startle", ["settle", "sparkle", "starve"]),
+ ("The flower-bed was bare because the ___ plants had been cut down for their winter rest.", "perennial", ["personal", "parental", "perpetual"]),
+ ("There were tall ___ and low ones growing together at the back of the bed.", "shrubs", ["shrugs", "scrubs", "stubs"]),
+ ("The robin pretended to peck at the earth to ___ her that he had not followed her.", "persuade", ["pursue", "perceive", "parade"]),
+], discussion=[
+ "Mary finds the buried key thanks to the robin. Do you believe animals can help people? Do you have a story about a helpful animal?",
+ "Mary feels the robin is \"a real person\"—only nicer than any other person. Why might a lonely child make friends with a bird?",
+]),
+}
+
+# keep vocab and quiz in story order
+_M = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "modern.json"), encoding="utf-8"))
+for _n, _d in WB.items():
+    _t = " ".join(p["t"] for p in _M[_n - 1]["paras"] if not p["poem"])
+    _pos = {v[0]: re.search(rf"\b{re.escape(v[1])}\b", _t).start() for v in _d["vocab"]}
+    _d["vocab"].sort(key=lambda v: _pos[v[0]])
+    _stem = lambda w: w.lower()[:max(3, len(w) - 2)]
+    def _qpos(q, _d=_d, _pos=_pos):
+        for v in _d["vocab"]:
+            if q[1].lower().startswith(_stem(v[0])) or q[1].lower() == v[1].lower(): return _pos[v[0]]
+        return 10**9
+    _d["quiz"].sort(key=_qpos)
