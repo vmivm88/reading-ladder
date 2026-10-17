@@ -11,7 +11,7 @@
 | 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북 | 39,121단어 | 9회 |
 | 3 | Alice's Adventures in Wonderland (Lewis Carroll, 1865) | 본문 + 워크북 | 26,280단어 | 6회 |
 | 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 + 워크북 | 50,750단어 | 12회 |
-| 3 | Anne of Green Gables (L. M. Montgomery, 1908) | 본문 + 워크북(제작 중) | 101,968단어 | 24회 |
+| 3 | Anne of Green Gables (L. M. Montgomery, 1908) | 본문 + 워크북 | 101,968단어 | 24회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
 

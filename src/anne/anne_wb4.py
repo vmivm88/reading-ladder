@@ -73,7 +73,7 @@ WB = {
  ("\"Did anyone ever hear the like?\" the ___ Marilla wanted to know.", "mystified", ["modified", "magnified", "mortified"]),
  ("Marilla lifted her candle and looked ___ at Anne's hair.", "scrutinizingly", ["surprisingly", "sympathizingly", "satisfyingly"]),
  ("Never in her life had Marilla seen anything so ___ as Anne's green hair.", "grotesque", ["gorgeous", "picturesque", "generous"]),
- ("\"But I didn't mean to dye it green, Marilla,\" protested Anne ___.", "dejectedly", ["directly", "delightedly", "defiantly"]),
+ ("\"But I didn't mean to dye it green, Marilla,\" protested Anne ___.", "dejectedly", ["directly", "delightedly", "decoratively"]),
  ("The peddler said the dye wouldn't wash off, and that was true, whatever his ___ in other matters.", "veracity", ["velocity", "voracity", "vivacity"]),
  ("Anne said she had believed every word the peddler said ___.", "implicitly", ["explicitly", "impolitely", "implausibly"]),
 ], discussion=[
@@ -94,7 +94,7 @@ WB = {
 ], quiz=[
  ("\"Of course it would be romantic,\" ___ Jane Andrews, \"but I know I couldn't keep still.\"", "conceded", ["conceited", "concealed", "concerned"]),
  ("Tennyson's poem had been ___ for the English course in Prince Edward Island schools.", "prescribed", ["described", "subscribed", "proscribed"]),
- ("Once the old black shawl had been ___, Anne spread it over the flat and lay down.", "procured", ["provoked", "produced", "protected"]),
+ ("Once the old black shawl had been ___, Anne spread it over the flat and lay down.", "procured", ["provoked", "proclaimed", "protected"]),
  ("Ruby worried, because Mrs. Lynde says all play-acting is ___ wicked.", "abominably", ["admirably", "affectionately", "absentmindedly"]),
  ("There was no cloth of gold, but an old yellow piano scarf was an excellent ___.", "substitute", ["institute", "statute", "prostitute"]),
  ("\"We were playing Elaine,\" Anne explained ___, without even looking at her rescuer.", "frigidly", ["frankly", "fearfully", "fondly"]),
@@ -126,7 +126,7 @@ WB = {
  ("There were thousands of people at the Exhibition, and it made Anne feel dreadfully ___.", "insignificant", ["indignant", "insufficient", "intelligent"]),
  ("Mrs. Lynde would not go to the horse races; she said horse racing was an ___.", "abomination", ["abbreviation", "admiration", "accommodation"]),
  ("Going for ice cream sounded so ___ to Anne, but it really did help.", "prosaic", ["poetic", "mosaic", "romantic"]),
- ("Miss Barry thought less about Anne's quaint speeches than about her ___ emotions and winning ways.", "transparent", ["apparent", "transferred", "transient"]),
+ ("Miss Barry thought less about Anne's quaint speeches than about her ___ emotions and winning ways.", "transparent", ["transported", "transferred", "transient"]),
  ("Marilla cooked a broiled chicken because Anne would need something real ___ after the drive.", "appetizing", ["apologizing", "appreciating", "appealing"]),
 ], discussion=[
  "After the excitement of town, Anne says the best part was coming home. Do you feel the same after a trip? What do you miss most about home?",
@@ -150,7 +150,7 @@ WB = {
  ("Anne had not realized that reading a storybook behind her history book was ___.", "deceitful", ["delightful", "doubtful", "dutiful"]),
  ("Marilla told Anne that Miss Stacy said she was bright and ___.", "diligent", ["delicate", "elegant", "indulgent"]),
  ("Diana was not going to Queen's, which seemed nothing short of a ___ to Anne.", "calamity", ["comedy", "capacity", "celebrity"]),
- ("The rest of the class ___ accepted that Anne and Gilbert were the best and did not compete.", "tacitly", ["tactfully", "tastily", "totally"]),
+ ("The rest of the class ___ accepted that Anne and Gilbert were the best and did not compete.", "tacitly", ["tirelessly", "tastily", "totally"]),
  ("The others acknowledged Anne's and Gilbert's ___ and never tried to compete with them.", "superiority", ["seniority", "security", "sincerity"]),
  ("Gilbert's only comfort was that Anne ___ Charlie Sloane even more than him.", "snubbed", ["stubbed", "scrubbed", "stunned"]),
  ("Miss Stacy told her class to lay in a good stock of health and ___ for the next year.", "vitality", ["validity", "vanity", "vicinity"]),
