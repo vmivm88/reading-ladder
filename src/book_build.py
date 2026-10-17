@@ -1,20 +1,23 @@
 import os, re, sys, html, random, json, importlib
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from playwright.sync_api import sync_playwright
-SCR = "/tmp/claude-0/-home-claude/e588e643-7009-5b40-9d8e-ea66df17ea15/scratchpad"
-CSS = open(os.path.join(SCR, "style.css"), encoding="utf-8").read()
+REPO = os.path.dirname(HERE)
+SCR = os.environ.get("BUILD_TMP", os.path.join(REPO, ".build")); os.makedirs(os.path.join(SCR, "prev"), exist_ok=True)
+CSS = open(os.path.join(HERE, "animal-farm", "style.css"), encoding="utf-8").read()
 e = html.escape
 BOOK = sys.argv[1]
 CFG = {
- "oz": dict(dir="/home/claude/oz", title="The Wonderful Wizard of Oz", source="L. Frank Baum, The Wonderful Wizard of Oz (1900)", year="1900", sub="L. Frank Baum's 1900 text in today's words", level="Level 2 (B1)",
+ "oz": dict(dir=os.path.join(HERE, "oz"), title="The Wonderful Wizard of Oz", source="L. Frank Baum, The Wonderful Wizard of Oz (1900)", year="1900", sub="L. Frank Baum's 1900 text in today's words", level="Level 2 (B1)",
             meetings=[(1,3),(4,6),(7,8),(9,10),(11,11),(12,13),(14,15),(16,19),(20,24)], slug="oz", unit="Chapter",
             intro="Baum's English is already close to today's, so only about sixty old words like <i>bade</i>, <i>presently</i> and <i>queer</i> were replaced."),
- "alice": dict(dir="/home/claude/alice", title="Alice's Adventures in Wonderland", source="Lewis Carroll, Alice's Adventures in Wonderland (1865)", year="1865", sub="Lewis Carroll's 1865 text in today's words", level="Level 3 (B1–B2)",
+ "alice": dict(dir=os.path.join(HERE, "alice"), title="Alice's Adventures in Wonderland", source="Lewis Carroll, Alice's Adventures in Wonderland (1865)", year="1865", sub="Lewis Carroll's 1865 text in today's words", level="Level 3 (B1–B2)",
             meetings=[(1,2),(3,4),(5,6),(7,8),(9,10),(11,12)], slug="alice", unit="Chapter",
             intro="Carroll's prose is close to today's English, so only about forty old words like <i>queer</i>, <i>shan't</i> and <i>to-day</i> were replaced. The poems are kept exactly as written, because changing a word would break the rhyme."),
- "jungle": dict(dir="/home/claude/jungle", title="The Jungle Book", source="Rudyard Kipling, The Jungle Book (1894)", year="1894", sub="Rudyard Kipling's 1894 text in today's words", level="Level 3 (B2)",
+ "jungle": dict(dir=os.path.join(HERE, "jungle"), title="The Jungle Book", source="Rudyard Kipling, The Jungle Book (1894)", year="1894", sub="Rudyard Kipling's 1894 text in today's words", level="Level 3 (B2)",
             meetings=[(1,2,2),(3,4,2),(5,6,2),(7,8,2),(9,10,1),(11,12,2),(13,14,1)], slug="jungle", unit="Section",
-            intro="Kipling's animals speak in old English: <i>thou art</i>, <i>hast thou</i>, <i>ye</i>. In the stories these were changed to today's English (<i>you are</i>, <i>have you</i>, <i>you</i>), about 300 changes in all. The songs are kept exactly as written, because changing a word would break the rhyme. The Jungle's Master Word, <i>We be of one blood, ye and I</i>, is also kept as Kipling wrote it."),
+            intro="Kipling's animals speak in old English: <i>thou art</i>, <i>hast thou</i>, <i>ye</i>. In the stories these were changed to today's English (<i>you are</i>, <i>have you</i>, <i>you</i>), about 300 changes in all. The songs are kept exactly as written, because changing a word would break the rhyme. The Jungle's Master Word, <i>We be of one blood, ye and I</i>, is also kept as Kipling wrote it.",
+            wb_cover="Use with the reader. For each story: 20 word cards, 20 fill-in-the-blank questions, notes on old words and old expressions, the list of updated words, and questions to talk about. For each song: notes on the old words and one question.",
+            wb_howto="1. Read the story in the reader. Most stories take two meetings: words 1–10 come from the first half, words 11–20 from the second half.<br>2. Study the word cards for your meeting.<br>3. Do the practice questions without looking back (questions follow the story in order).<br>4. Read the notes on old words (†) and old expressions (※), and the list of words we updated.<br>5. Read the song after each story and choose a question to talk about at the meeting."),
 }[BOOK]
 TITLE, SOURCE = CFG["title"], CFG["source"]
 WPM = 100
@@ -43,7 +46,17 @@ probs = []
 for idx, c in enumerate(M, 1):
     n, name = roman_title(c["title"], idx)
     paras = [p if isinstance(p, dict) else {"t": p, "poem": False} for p in c["paras"]]
-    text = "\n\n".join(("@@POEM@@" + p["t"].replace("\n\n", "\n@@STANZA@@\n")) if p["poem"] else p["t"] for p in paras)
+    blocks = [("@@POEM@@" + p["t"].replace("\n\n", "\n@@STANZA@@\n")) if p["poem"] else p["t"] for p in paras]
+    for g in MEETINGS:
+        if len(g) > 2 and g[2] == 2 and g[0] == n:
+            prose = [i for i, p in enumerate(paras) if not p["poem"]]
+            tot = sum(len(paras[i]["t"].split()) for i in prose); acc = 0; best = None
+            for i in prose:
+                if best is None or abs(acc - tot / 2) < abs(best[1] - tot / 2): best = (i, acc)
+                acc += len(paras[i]["t"].split())
+            k2 = sum((gg[2] if len(gg) > 2 else 1) for gg in MEETINGS[:MEETINGS.index(g)]) + 2
+            blocks.insert(best[0], f"@@BREAK@@{k2}")
+    text = "\n\n".join(blocks)
     def wrap(text, word, a, b):
         m = re.search(rf"(?<![\w*{{\[]){re.escape(word)}(?![\w])", text)
         if not m: probs.append(f"ch{n}: '{word}' not found"); return text
@@ -51,7 +64,7 @@ for idx, c in enumerate(M, 1):
     if n in WB:
         for v in WB[n]["vocab"]: text = wrap(text, v[1], "**", "**")
     for w in OLD_MARKS.get(n, []):
-        m = re.search(rf"\b{w}\b", text, re.I)
+        m = re.search(rf"\b{w}\b(?![’'])", text) if w[:1].isupper() else re.search(rf"\b{w}\b", text, re.I)
         if m: text = text[:m.start()] + "{{" + m.group(0) + "}}" + text[m.end():]
         else: probs.append(f"ch{n}: old word {w} not found")
     for w in IDIOM_MARKS.get(n, []): text = wrap(text, w, "[[", "]]")
@@ -67,6 +80,7 @@ words_total = sum(c["words"] for c in CH)
 print("words:", words_total)
 
 EXTRA = """
+.mbreak { margin: 18px 0; padding: 6px 0; border-top: 2px dashed #c9b78f; border-bottom: 2px dashed #c9b78f; text-align: center; font-size: 9pt; letter-spacing: 3px; color: #8a5a2b; font-weight: 700; }
 .reader p.poem { font-style: italic; margin: 6px 0 10px 28px; line-height: 1.55; }
 .reader p { font-family: 'Noto Serif CJK KR', Georgia, serif; font-size: 12pt; line-height: 1.72; margin: 0 0 9px; text-align: left; }
 b.v { background: linear-gradient(transparent 62%, #f6e7a6 62%); font-weight: 700; }
@@ -95,6 +109,8 @@ def mark(text):
         p = re.sub(r"\*\*(.+?)\*\*", r"<b class='v'>\1</b>", p)
         p = re.sub(r"\{\{(.+?)\}\}", r"<span class='old'>\1<sup>†</sup></span>", p)
         p = re.sub(r"\[\[(.+?)\]\]", r"<span class='idi'>\1<sup>※</sup></span>", p)
+        if p.startswith("@@BREAK@@"):
+            out.append(f"<div class='mbreak'>MEETING {p[9:]} STARTS HERE</div>"); continue
         if p.startswith("@@POEM@@"):
             p = p[8:].replace("\n@@STANZA@@\n", "</p><p class='poem'>").replace("\n", "<br>")
             out.append(f"<p class='poem'>{p}</p>")
@@ -143,37 +159,54 @@ def reader(path):
     p.append("</body></html>")
     open(path, "w", encoding="utf-8").write("".join(p))
 
+def meeting_label(n, i=0, total=10):
+    for a, b, k1, k2 in _groups():
+        if a <= n <= b:
+            if k1 == k2 or total <= 10 or i is None: return f"MEETING {k1}" if k1 == k2 else f"MEETINGS {k1}–{k2}"
+            return f"MEETING {k1 if i < total / 2 else k2}"
+    return ""
+
 def workbook(path, chapters):
     random.seed(int(CFG["year"]))
     p = [f"<html><head><meta charset='utf-8'><style>{CSS}{EXTRA}</style></head><body>"]
-    rng = f"Chapters {chapters[0]}–{chapters[-1]}"
-    p.append(cover(f"Workbook · {rng}", "Use with the reader. For each chapter: 10 word cards, 10 fill-in-the-blank questions, notes on old words and old expressions, the list of updated words, and questions to talk about."))
-    p.append("<div class='page'><h2>How to Use This Workbook</h2><div>1. Read one chapter in the reader.<br>2. Study the 10 word cards.<br>3. Do the 10 practice questions without looking back.<br>"
-             "4. Read the notes on old words (†) and old expressions (※).<br>5. Choose a question to talk about at the meeting.</div>" + LEGEND + "<h3>MEETINGS</h3><table class='chars'>" + meeting_rows() + "</table></div>")
+    unit = CFG["unit"]
+    rng = f"{unit}s {chapters[0]}–{chapters[-1]}"
+    p.append(cover(f"Workbook · {rng}", CFG.get("wb_cover", "Use with the reader. For each chapter: 10 word cards, 10 fill-in-the-blank questions, notes on old words and old expressions, the list of updated words, and questions to talk about.")))
+    p.append("<div class='page'><h2>How to Use This Workbook</h2><div>" + CFG.get("wb_howto", "1. Read one chapter in the reader.<br>2. Study the 10 word cards.<br>3. Do the 10 practice questions without looking back.<br>"
+             "4. Read the notes on old words (†) and old expressions (※).<br>5. Choose a question to talk about at the meeting.") + "</div>" + LEGEND + "<h3>MEETINGS</h3><table class='chars'>" + meeting_rows() + "</table></div>")
     for c in CH:
         n = c["n"]
         if n not in chapters or n not in WB: continue
-        wb = WB[n]; lab = f"<div class='chlabel'>CHAPTER {n} · {e(c['name'].upper())}</div>"
-        for half in (0, 5):
-            p.append(f"<div class='page'>{lab}<h2>{'Vocabulary' if half == 0 else 'Vocabulary (continued)'}</h2>")
+        wb = WB[n]; nv = len(wb["vocab"])
+        lab = lambda i=None: f"<div class='chlabel'>{unit.upper()} {n} · {e(c['name'].upper())}" + (f" · {meeting_label(n, i, nv)}" if nv > 10 or CFG['slug'] == 'jungle' else "") + "</div>"
+        for half in range(0, nv, 5):
+            p.append(f"<div class='page'>{lab(half)}<h2>{'Vocabulary' if half == 0 else 'Vocabulary (continued)'}</h2>")
             for k, (w, surf, pos, st, ipa, ko, col, ex1, ex2) in enumerate(wb["vocab"][half:half + 5], half + 1):
                 p.append(f"""<div class='card'><div><span class='num'>{k:02d}</span><span class='w'>{e(w)}</span><span class='pos'>{e(pos)}</span>
 <span class='pron'>{e(st)} · {e(ipa)}</span><span class='ko'>({e(ko)})</span></div>
 <div class='col'><span class='lbl'>COLLOCATIONS</span>{e(col)}</div><ul><li>{e(ex1)}</li><li>{e(ex2)}</li></ul></div>""")
             p.append("</div>")
-        key = []
-        p.append(f"<div class='page'>{lab}<h2>Practice &amp; Talk</h2><p>Choose the best word. Watch the form of the word (-ed, -s, -ly).</p>")
-        for k, (s_, a, d) in enumerate(wb["quiz"], 1):
-            opts = [a] + d; random.shuffle(opts)
-            key.append(f"{k}. ({'abcd'[opts.index(a)]}) {a}")
-            os_ = "".join(f"<span>({l}) {e(o)}</span>" for l, o in zip("abcd", opts))
-            p.append(f"<div class='q'><b>{k}.</b> {e(s_).replace('___', '__________')}<div class='opts'>{os_}</div></div>")
-        p.append("<h3>LET'S TALK</h3><ol class='disc'>" + "".join(f"<li>{e(d)}<div class='lines'></div></li>" for d in wb["discussion"]) + "</ol>")
-        p.append("<h3>ANSWER KEY</h3><div class='key'>" + "<br>".join(e(k) for k in key) + "</div></div>")
+        if wb["quiz"]:
+            key = []; qs = list(enumerate(wb["quiz"], 1))
+            for start in range(0, len(qs), 10):
+                first = start == 0; last = start + 10 >= len(qs)
+                p.append(f"<div class='page'>{lab(start)}<h2>{'Practice &amp; Talk' if first and last else ('Practice' if first else 'Practice (continued)')}</h2>")
+                if first: p.append("<p>Choose the best word. Watch the form of the word (-ed, -s, -ly).</p>")
+                for k, (s_, a, d) in qs[start:start + 10]:
+                    opts = [a] + d; random.shuffle(opts)
+                    key.append(f"{k}. ({'abcd'[opts.index(a)]}) {a}")
+                    os_ = "".join(f"<span>({l}) {e(o)}</span>" for l, o in zip("abcd", opts))
+                    p.append(f"<div class='q'><b>{k}.</b> {e(s_).replace('___', '__________')}<div class='opts'>{os_}</div></div>")
+                if last:
+                    p.append("<h3>LET'S TALK</h3><ol class='disc'>" + "".join(f"<li>{e(d)}<div class='lines'></div></li>" for d in wb["discussion"]) + "</ol>")
+                    p.append("<h3>ANSWER KEY</h3><div class='key'>" + "<br>".join(e(k) for k in key) + "</div>")
+                p.append("</div>")
         olds = list(dict.fromkeys(re.findall(r"\{\{(.+?)\}\}", c["text"])))
         idis = list(dict.fromkeys(re.findall(r"\[\[(.+?)\]\]", c["text"])))
-        if olds or idis or c["changes"]:
-            p.append(f"<div class='page'>{lab}<h2>Old Words &amp; Expressions</h2>")
+        talk_here = not wb["quiz"] and wb.get("discussion")
+        if olds or idis or c["changes"] or talk_here:
+            p.append(f"<div class='page'>{lab()}<h2>{'Song Notes' if not nv else 'Old Words &amp; Expressions'}</h2>")
+            if not nv: p.append("<p>The songs are kept exactly as Kipling wrote them. These notes explain the old words.</p>" if CFG["slug"] == "jungle" else "")
             if olds:
                 p.append("<h3>OLD WORDS KEPT †</h3>")
                 for k_ in olds:
@@ -186,12 +219,14 @@ def workbook(path, chapters):
                     p.append(f"<div class='note-box'><span class='h'>{e(k_)}</span><span class='ko'>({e(ko)})</span><div class='m'><b>Today:</b> {e(mod)}</div><div class='m' style='color:#666'>{e(ex)}</div></div>")
             if c["changes"]:
                 p.append(f"<h3>WORDS WE UPDATED</h3><table class='ch'><tr><td><b>{CFG['year']}</b></td><td><b>Today</b></td></tr>" + "".join(f"<tr><td class='o'>{e(a)}</td><td>{e(b)}</td></tr>" for a, b in c["changes"]) + "</table>")
+            if talk_here:
+                p.append("<h3>LET'S TALK</h3><ol class='disc'>" + "".join(f"<li>{e(d)}<div class='lines'></div><div class='lines'></div></li>" for d in wb["discussion"]) + "</ol>")
             p.append("</div>")
     p.append("</body></html>")
     open(path, "w", encoding="utf-8").write("".join(p))
 
 if __name__ == "__main__":
-    out = "/home/claude/reading-ladder-site/workbooks"; sl = CFG["slug"]
+    out = os.path.join(REPO, "workbooks"); sl = CFG["slug"]
     chapters = sorted(WB)
     reader(os.path.join(SCR, f"{sl}_reader.html"))
     jobs = [(f"{sl}_reader.html", f"{sl}-reader.pdf")]

@@ -10,10 +10,9 @@
 | 1 | Aladdin and the Wonderful Lamp (Andrew Lang, 1889) | 본문 + 워크북 | 5,326단어 | 2회 |
 | 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북 | 39,121단어 | 9회 |
 | 3 | Alice's Adventures in Wonderland (Lewis Carroll, 1865) | 본문 + 워크북 | 26,280단어 | 6회 |
-| 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 (워크북 제작 중) | 51,118단어 | 12회 |
+| 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 + 워크북 | 50,750단어 | 12회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
-제작 중: Jungle Book 워크북
 
 ## 원칙
 
@@ -49,6 +48,8 @@ Python 3와 Playwright(Chromium)가 필요합니다.
 pip install playwright pypdfium2
 python -m playwright install chromium
 ```
+
+Oz·Alice·Jungle Book은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`). 결과 PDF는 `workbooks/`에 저장됩니다.
 
 `src/lang-tales/build_story.py`와 `src/animal-farm/build_all.py`는 원래 작업 환경의 경로를 쓰고 있어서, 다시 빌드하려면 스크립트 안의 경로를 이 저장소 기준으로 바꿔야 합니다.
 
