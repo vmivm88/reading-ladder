@@ -11,6 +11,7 @@
 | 2 | The Wonderful Wizard of Oz (L. Frank Baum, 1900) | 본문 + 워크북 | 39,121단어 | 9회 |
 | 3 | Alice's Adventures in Wonderland (Lewis Carroll, 1865) | 본문 + 워크북 | 26,280단어 | 6회 |
 | 3 | The Jungle Book (Rudyard Kipling, 1894) | 본문 + 워크북 | 50,750단어 | 12회 |
+| 3 | Anne of Green Gables (L. M. Montgomery, 1908) | 본문 + 워크북(제작 중) | 101,968단어 | 24회 |
 | 4 | Animal Farm (George Orwell, 1945) | 워크북 | 약 3만 단어 | 7회 |
 
 
@@ -37,7 +38,8 @@ src/lang-tales/         Lang 동화 원문(1889), 현대어 본문, 워크북 �
 src/animal-farm/        Animal Farm 워크북 데이터와 빌드 스크립트
 src/oz/                 Oz 원문, 단어 교체 규칙(modernize.py), 워크북 데이터
 src/alice/, src/jungle/ Alice·Jungle Book 장별 원문(chapters.json), 단어 교체 규칙, 표시 데이터
-src/book_build.py       Oz·Alice·Jungle Book 본문/워크북 PDF 빌드 스크립트
+src/anne/               Anne 장별 원문, 단어 교체 규칙, 워크북 데이터
+src/book_build.py       Oz·Alice·Jungle Book·Anne 본문/워크북 PDF 빌드 스크립트
 ```
 
 ## PDF 다시 만들기
@@ -49,7 +51,7 @@ pip install playwright pypdfium2
 python -m playwright install chromium
 ```
 
-Oz·Alice·Jungle Book은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`). 결과 PDF는 `workbooks/`에 저장됩니다.
+Oz·Alice·Jungle Book은 저장소 안에서 바로 다시 만들 수 있습니다: `python src/book_build.py oz` (또는 `alice`, `jungle`, `anne`). 결과 PDF는 `workbooks/`에 저장됩니다.
 
 `src/lang-tales/build_story.py`와 `src/animal-farm/build_all.py`는 원래 작업 환경의 경로를 쓰고 있어서, 다시 빌드하려면 스크립트 안의 경로를 이 저장소 기준으로 바꿔야 합니다.
 
